@@ -1,14 +1,13 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AdsList } from '../../components/ads-list/ads-list.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { InputGroupModule } from 'primeng/inputgroup';
-import { Ad, SearchAdsService, SearchByTitleRequest } from '../../services/search-ads.service';
-import { debounceTime, filter, map, Subscription } from 'rxjs';
+import { Ad, SearchAdsService, SearchByLatLongRequest, SearchByTitleRequest } from '../../services/search-ads.service';
+import { debounceTime, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { AdResponse, GetAdsRequest, PublishService } from '../../services/publish.service';
 
 @Component({
   selector: 'rea-home',
@@ -25,12 +24,15 @@ import { AdResponse, GetAdsRequest, PublishService } from '../../services/publis
   styleUrl: './home.component.scss'
 })
 export class HomePage {
-  publishService = inject(PublishService);
   searchAdsService = inject(SearchAdsService);
 
   searchControl = new FormControl('');
+  position = {
+    latitude: 42.35,
+    longitude: 13.4
+  }
   ads: Ad[] = [];
-  featuredAds = signal<AdResponse[]>([]);
+  featuredAds: Ad[] = [];
 
   private subscriptionSearchByTitle: Subscription = new Subscription;
   private subscriptionFeatured: Subscription = new Subscription;
@@ -47,19 +49,34 @@ export class HomePage {
   }
 
   loadFeaturedAds(): void {
-    const request: GetAdsRequest = {
-      page: 0,
-      size: 5,
+    const searchRequest: SearchByLatLongRequest = {
+      latitude: this.position.latitude,
+      longitude: this.position.longitude,
+      radius: 100,
+      status: 'PUBLISHED',
       sortBy: 'createdAt',
       sortOrder: 'desc',
-      status: 'PUBLISHED'
+      page: 0,
+      size: 10
     };
-
-    this.subscriptionFeatured = this.publishService.getAds(request).pipe(
-      map(response => response.content)      
-    ).subscribe(ads => {
-      this.featuredAds.set(ads);
+    this.searchAdsService.searchByLatLong(searchRequest).subscribe(res => {
+      this.featuredAds = Array.isArray(res) ? res : [];;
     });
+  }
+
+  getLocation() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.position.latitude = position.coords.latitude;
+          this.position.longitude = position.coords.longitude;
+          this.loadFeaturedAds();
+        },
+        (error) => {
+          this.loadFeaturedAds();
+        }
+      );
+    }
   }
 
   onSearch(text: string | null) {
