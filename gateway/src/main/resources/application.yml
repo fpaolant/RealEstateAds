@@ -1,0 +1,301 @@
+server:
+  port: 7100
+
+spring.application:
+  name: api-gateway
+
+spring.profiles:
+  active: dev
+
+#spring.config.import=optional:configserver:http://${CONFIG_SERVER_HOST}:${CONFIG_SERVER_PORT}
+#spring.cloud.config.fail-fast=true
+
+services:
+  account-service-uri: lb://ACCOUNT-SERVICE #"http://localhost:7110" #"host.docker.internal:7110" #lb://ACCOUNT-SERVICE
+  ads-service-uri: lb://ADS-SERVICE #"http://localhost:7130" #"host.docker.internal:7130" #lb://ADS-SERVICE
+  wallet-service-uri: lb://WALLET-SERVICE #"http://localhost:7160" #"host.docker.internal:7160" #lb://WALLET-SERVICE
+  search-service-uri: lb://SEARCH-SERVICE #"http://localhost:7140" #"host.docker.internal:7140" #lb://SEARCH-SERVICE
+  publish-service-uri: lb://PUBLISH-SERVICE #"http://localhost:7150" #"host.docker.internal:7150" #lb://PUBLISH-SERVICE
+  geolocation-service-uri: lb://GEOLOCATION-SERVICE #"http://localhost:7150" #"host.docker.internal:7150" #lb://GEOLOCATION-SERVICE
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        # Account (unsecured)
+        - id: login_route
+          uri: ${services.account-service-uri}
+          predicates:
+            - Path=/api/account/login
+          filters:
+            - RewritePath=/api/account/login, /services/api/account/login
+
+        - id: check_token_route
+          uri: ${services.account-service-uri}
+          predicates:
+            - Path=/api/account/check-token
+          filters:
+            - RewritePath=/api/account/check-token, /services/api/account/check-token
+
+        - id: user_account_route
+          uri: ${services.account-service-uri}
+          predicates:
+            - Path=/api/account/user-account
+          filters:
+            - RewritePath=/api/account/user-account, /services/api/account/user-account
+
+        - id: secure_accountapi
+          uri: ${services.account-service-uri}
+          predicates:
+            - Path=/api/account/openapi.json
+          filters:
+            - RewritePath=/api/account/openapi.json, /services/openapi.json
+
+        # Account (secured)
+        - id: secure_user_account_route
+          uri: ${services.account-service-uri}
+          predicates:
+            - Path=/api/account/{id}
+          filters:
+            - RewritePath=/api/account/(?<segment>.*), /services/api/account/${segment}
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "USER"
+                  - "ADMIN"
+                checkPathWithIdentifier: true
+
+        - id: secure_accounts_route
+          uri: ${services.account-service-uri}
+          predicates:
+            - Path=/api/account/accounts
+          filters:
+            - RewritePath=/api/account/accounts, /services/api/account/accounts
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "ADMIN"
+                checkPathWithIdentifier: true
+
+        - id: secure_promote_account_route
+          uri: ${services.account-service-uri}
+          predicates:
+            - Path=/api/account/{id}/promote
+          filters:
+            - RewritePath=/api/account/(?<segment>.*)/promote, /services/api/account/${segment}/promote
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "ADMIN"
+                checkPathWithIdentifier: true
+
+        - id: secure_demote_account_route
+          uri: ${services.account-service-uri}
+          predicates:
+            - Path=/api/account/{id}/demote
+          filters:
+            - RewritePath=/api/account/(?<segment>.*)/demote, /services/api/account/${segment}/demote
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "ADMIN"
+                checkPathWithIdentifier: true
+
+        # Wallet (unsecured)
+        - id: secure_walletapi
+          uri: ${services.wallet-service-uri}
+          predicates:
+            - Path=/api/wallet/openapi.json
+          filters:
+            - RewritePath=/api/wallet/openapi.json, /services/openapi.json
+
+        # Wallet (secured)
+        - id: secure_walletid_route
+          uri: ${services.wallet-service-uri}
+          predicates:
+            - Path=/api/wallet/{walletId}
+          filters:
+            - RewritePath=/api/wallet/(?<segment>.*), /services/api/wallet/${segment}
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "ADMIN"
+                  - "USER"
+                checkPathWithIdentifier: true
+
+        - id: secure_wallet_accountid_route
+          uri: ${services.wallet-service-uri}
+          predicates:
+            - Path=/api/wallet/account/{accountId}
+          filters:
+            - RewritePath=/api/wallet/account/(?<segment>.*), /services/api/wallet/account/${segment}
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "ADMIN"
+                  - "USER"
+                checkPathWithIdentifier: true
+
+        - id: secure_wallet_charge_route
+          uri: ${services.wallet-service-uri}
+          predicates:
+            - Path=/api/wallet/charge
+          filters:
+            - RewritePath=/api/wallet/charge, /services/api/wallet/charge
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "ADMIN"
+                  - "USER"
+                checkPathWithIdentifier: true
+
+        - id: secure_wallet_recharge_route
+          uri: ${services.wallet-service-uri}
+          predicates:
+            - Path=/api/wallet/recharge
+          filters:
+            - RewritePath=/api/wallet/recharge, /services/api/wallet/recharge
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "ADMIN"
+                  - "USER"
+                checkPathWithIdentifier: true
+
+        # Ads (secured)
+        - id: adsapi
+          uri: ${services.ads-service-uri}
+          predicates:
+            - Path=/api/ads/wsdl
+          filters:
+            - RewritePath=/api/ads/wsdl, /services/AdsService?wsdl
+
+        # Search (unsecured)
+        - id: searchapi
+          uri: ${services.search-service-uri}
+          predicates:
+            - Path=/api/search/openapi.json
+          filters:
+            - RewritePath=/api/search/openapi.json, /services/openapi.json
+
+        - id: searchByTitle_route
+          uri: ${services.search-service-uri}
+          predicates:
+            - Path=/api/search/searchByTitle
+          filters:
+            - RewritePath=/api/search/searchByTitle, /services/api/search/searchByTitle
+
+        - id: searchByCity_route
+          uri: ${services.search-service-uri}
+          predicates:
+            - Path=/api/search/searchByCity
+          filters:
+            - RewritePath=/api/search/searchByCity, /services/api/search/searchByCity
+
+        - id: searchByLatLong_route
+          uri: ${services.search-service-uri}
+          predicates:
+            - Path=/api/search/searchByLatLong
+          filters:
+            - RewritePath=/api/search/searchByLatLong, /services/api/search/searchByLatLong
+
+       # Publish (unsecured)
+        - id: publishapi
+          uri: ${services.publish-service-uri}
+          predicates:
+            - Path=/api/publish/openapi.json
+          filters:
+            - RewritePath=/api/publish/openapi.json, /services/openapi.json
+
+        - id: publish_account_route
+          uri: ${services.publish-service-uri}
+          predicates:
+            - Path=/api/publish/account
+          filters:
+            - RewritePath=/api/publish/account, /services/api/publish/account
+
+        # Publish (secured)
+        - id: publish_ad_route
+          uri: ${services.publish-service-uri}
+          predicates:
+            - Path=/api/publish/ad
+          filters:
+            - RewritePath=/api/publish/ad, /services/api/publish/ad
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "USER"
+                  - "ADMIN"
+                checkPathWithIdentifier: true
+
+        - id: publish_approve_ad_route
+          uri: ${services.publish-service-uri}
+          predicates:
+            - Path=/api/publish/ad/{adId}/approve
+          filters:
+            - RewritePath=/api/publish/ad/(?<segment>.*)/approve , /services/api/publish/ad/${segment}/approve
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "ADMIN"
+                checkPathWithIdentifier: true
+
+        - id: publish_reject_ad_route
+          uri: ${services.publish-service-uri}
+          predicates:
+              - Path=/api/publish/ad/{adId}/reject
+          filters:
+              - RewritePath=/api/publish/ad/(?<segment>.*)/reject , /services/api/publish/ad/${segment}/reject
+              - name: AuthorizationFilter
+                args:
+                  roles:
+                  - "ADMIN"
+                  checkPathWithIdentifier: true
+
+        - id: get_ads_route
+          uri: ${services.publish-service-uri}
+          predicates:
+              - Path=/api/publish/ads
+          filters:
+              - RewritePath=/api/publish/ads , /services/api/publish/ads
+              - name: AuthorizationFilter
+                args:
+                  roles:
+                  - "ADMIN"
+                  checkPathWithIdentifier: true
+
+        - id: get_account_ads_route
+          uri: ${services.publish-service-uri}
+          predicates:
+            - Path=/api/publish/ads/account/{accountId}
+          filters:
+            - RewritePath=/api/publish/ads/account/(?<segment>.*)  , /services/api/publish/ads/account/${segment}
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "ADMIN"
+                  - "USER"
+                checkPathWithIdentifier: true
+
+
+---
+eureka:
+  client:
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://${EUREKA_SERVER_HOSTNAME:host.docker.internal}:${EUREKA_SERVER_PORT:8761}/eureka/
+  instance:
+    # Request a lease with a validity of 11 seconds. If until then the
+    # lease has not been renewed, it expires and the Eureka server can evict it.
+    # Default: 90s
+    lease-expiration-duration-in-seconds: 70
+    # The cadence of lease renewal, i.e. how often a heartbeat is sent to Eureka server.
+    # In this case every 5 seconds. Use this only for development / debugging. In production use the ...
+    # Default: 30s
+    lease-renewal-interval-in-seconds: 10
+    prefer-ip-address: true
+
+---
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

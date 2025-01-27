@@ -1,0 +1,85 @@
+@startuml
+skinparam linetype ortho
+skinparam componentSpacing 500
+
+database AccountDB
+database AdsDB
+database WalletDB
+
+component "RealEstate SOA System" {
+
+ [Ads Service] as ADS <<SOAP Service Provider>>
+
+
+ [Geolocation Service] as GS <<SOAP Service Provider>>
+
+
+
+ [Account Service] as AS <<REST Service Provider>>
+
+
+
+
+
+ [Wallet Service] as WS <<REST Service Provider>>
+
+
+
+ [Search Service] as SS <<REST Service Prosumer>>
+
+
+ [Publish Service] as PS <<REST Service Prosumer>>
+
+
+ [Gateway Service] as GW <<REST Service Prosumer>>
+}
+
+[RealEstate Service Client] as C <<Client>>
+
+GW -0)- C
+
+AccountDB --0)-- AS
+AS --0)-- GW : Login
+AS --0)-- GW : CheckTokenResponse
+AS --0)-- GW : GetAccount
+AS --0)-- PS : OpenAccountUser
+AS --0)-- GW : GetAccounts
+AS --0)-- GW : PromoteAccount
+AS --0)-- GW : DemoteAccount
+
+AdsDB --0)-- ADS
+ADS --0)-- PS : CreateAd
+ADS --0)- PS : ApproveAd
+ADS --0)-- PS : RejectAd
+ADS --0)-- PS : GetAds
+ADS --0)-- PS : GetAdsByAccountId
+ADS --0)-- SS : GetAds
+ADS --0)-- SS : GetAdsByCity
+ADS --0)-- SS : GetAdsMaxPrice
+
+WalletDB --0)-- WS
+WS --0)-- GW : RechargeWallet
+WS --0)-- PS : CreateWallet
+WS --0)-- PS : GetWallet
+WS --0)-- PS : ChargeWallet
+WS --0)-- PS : RechargeWallet
+
+
+GS ---0)-- SS : CalculateDistance
+GS ---0)-- SS : GetLocationDetails
+
+
+SS --0)-- GW : SearchByCity
+SS --0)-- GW : SearchByTitle
+SS --0)-- GW : SearchByLatLong
+
+
+PS --0)-- GW : PublishAd
+PS --0)-- GW : OpenPublishAccount
+PS --0)-- GW : ApproveAd
+PS --0)-- GW : RejectAd
+PS --0)-- GW : GetAds
+PS --0)-- GW : GetAdsByAccountId
+
+
+@enduml

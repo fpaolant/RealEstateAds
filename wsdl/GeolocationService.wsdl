@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://webservice.geolocation_service.sose.univaq.disim.it/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="GeolocationService" targetNamespace="http://webservice.geolocation_service.sose.univaq.disim.it/">
+  <wsdl:types>
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://webservice.geolocation_service.sose.univaq.disim.it/" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://webservice.geolocation_service.sose.univaq.disim.it/" version="1.0">
+      <xs:element name="DistanceResponse" type="tns:distanceResponse"/>
+      <xs:element name="LocationDetails" type="tns:locationDetailsResponse"/>
+      <xs:element name="calculateDistance" type="tns:calculateDistance"/>
+      <xs:element name="getLocationDetails" type="tns:getLocationDetails"/>
+      <xs:element name="getLocationDetailsAsync" type="tns:getLocationDetailsAsync"/>
+      <xs:complexType name="getLocationDetails">
+        <xs:sequence>
+          <xs:element name="city" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getLocationDetailsResponse">
+        <xs:sequence>
+          <xs:element form="qualified" minOccurs="0" name="GetLocationDetailsResponse" type="tns:locationDetailsResponse"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="locationDetailsResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="city" type="xs:string"/>
+          <xs:element minOccurs="0" name="country" type="xs:string"/>
+          <xs:element name="latitude" type="xs:double"/>
+          <xs:element name="longitude" type="xs:double"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="calculateDistance">
+        <xs:sequence>
+          <xs:element name="lat1" type="xs:double"/>
+          <xs:element name="lon1" type="xs:double"/>
+          <xs:element name="lat2" type="xs:double"/>
+          <xs:element name="lon2" type="xs:double"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getDistanceResponse">
+        <xs:sequence>
+          <xs:element form="qualified" minOccurs="0" name="GetDistanceResponse" type="tns:distanceResponse"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="distanceResponse">
+        <xs:sequence>
+          <xs:element name="distanceInKm" type="xs:double"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getLocationDetailsAsync">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="getLocationDetailsResponse" nillable="true" type="tns:getLocationDetailsResponse"/>
+      <xs:element name="getDistanceResponse" nillable="true" type="tns:getDistanceResponse"/>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getLocationDetails">
+    <wsdl:part element="tns:getLocationDetails" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="calculateDistance">
+    <wsdl:part element="tns:calculateDistance" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="calculateDistanceResponse">
+    <wsdl:part element="tns:getDistanceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getLocationDetailsResponse">
+    <wsdl:part element="tns:getLocationDetailsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getLocationDetailsAsync">
+    <wsdl:part element="tns:getLocationDetailsAsync" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getLocationDetailsAsyncResponse">
+    <wsdl:part element="tns:getLocationDetailsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="GeolocationService">
+    <wsdl:operation name="getLocationDetails">
+      <wsdl:input message="tns:getLocationDetails" name="getLocationDetails">
+      </wsdl:input>
+      <wsdl:output message="tns:getLocationDetailsResponse" name="getLocationDetailsResponse">
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="calculateDistance">
+      <wsdl:input message="tns:calculateDistance" name="calculateDistance">
+      </wsdl:input>
+      <wsdl:output message="tns:calculateDistanceResponse" name="calculateDistanceResponse">
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLocationDetailsAsync">
+      <wsdl:input message="tns:getLocationDetailsAsync" name="getLocationDetailsAsync">
+      </wsdl:input>
+      <wsdl:output message="tns:getLocationDetailsAsyncResponse" name="getLocationDetailsAsyncResponse">
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GeolocationServiceSoapBinding" type="tns:GeolocationService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getLocationDetails">
+      <soap:operation soapAction="urn:GetLocationDetails" style="document"/>
+      <wsdl:input name="getLocationDetails">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getLocationDetailsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="calculateDistance">
+      <soap:operation soapAction="urn:CalculateDistance" style="document"/>
+      <wsdl:input name="calculateDistance">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="calculateDistanceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLocationDetailsAsync">
+      <soap:operation soapAction="urn:GetLocationDetailsAsync" style="document"/>
+      <wsdl:input name="getLocationDetailsAsync">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getLocationDetailsAsyncResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GeolocationService">
+    <wsdl:port binding="tns:GeolocationServiceSoapBinding" name="GeolocationPort">
+      <soap:address location="http://localhost:7120/services/GeolocationService"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

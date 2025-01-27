@@ -1,0 +1,142 @@
+<p-toolbar styleClass="mb-6" [hidden]="true">
+    <ng-template #start>
+        <p-button label="Nuovo" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedAccounts()" [disabled]="!selectedAccounts || !selectedAccounts.length" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="accounts()"
+    [rows]="pager.size"
+    [totalRecords]="totalAccounts"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['username', 'name', 'surname', 'email']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedAccounts"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Ti sto mostrando da {first} a {last} di {totalRecords} accounts"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[1, 5, 10, 15, 20]"
+    (rowsChange)="onRowsChange($event)"
+    (firstChange)="onFirstChange($event)"
+    [lazy]="true"
+    
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Gestisci account</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Cerca..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th style="width: 3rem">ID</th>
+            <th pSortableColumn="username" style="min-width:rem">
+                Username
+                <p-sortIcon field="title" />
+            </th>
+            <th pSortableColumn="name" style="min-width: 8rem">
+                Nome
+                <p-sortIcon field="name" />
+            </th>
+            <th pSortableColumn="surname" style="min-width:10rem">
+                Cognome
+                <p-sortIcon field="surname" />
+            </th>
+            <th pSortableColumn="email" style="min-width:10rem">
+                Email
+                <p-sortIcon field="email" />
+            </th>
+            <th pSortableColumn="role" style="min-width:8rem">
+                Ruolo
+                <p-sortIcon field="role" />
+            </th>
+            <th pSortableColumn="createDate" style="min-width:10rem">
+                Data creazione
+                <p-sortIcon field="createDate" />
+            </th>
+            <th style="min-width: 12rem">
+                Azioni
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-account>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="account" />
+            </td>
+            <td style="min-width: 3rem">{{ account.id }}</td>
+            <td style="min-width: 6rem">{{ account.username }}</td>
+            <td style="min-width: 8rem">{{ account.name }}</td>
+            <td style="min-width: 10rem">{{ account.surname }}</td>
+            <td style="min-width: 10rem">{{ account.email }}</td>
+            <td style="min-width: 8rem">{{ account.role }}</td>
+            <td style="min-width: 10rem">{{ account.createDate | date:'dd/MM/yyyy' }}</td>
+            <td>
+                <p-button icon="pi pi-eye" severity="info" class="mr-2" [rounded]="true" [outlined]="true" (click)="editAccount(account)" pTooltip="Visualizza" tooltipPosition="left"/>
+                <p-button icon="pi pi-verified" severity="success" [rounded]="true" [outlined]="true" (click)="promoteAccount(account)" *ngIf="account.role==='USER'" pTooltip="Promuovi ad ADMIN" tooltipPosition="left"/>
+                <p-button icon="pi pi-user" severity="success" [rounded]="true" [outlined]="true" (click)="demoteAccount(account)" *ngIf="account.role==='ADMIN'" pTooltip="Imposta come USER {{account.id===currentUserUserID? '(disabilitato per se stessi)':''}}" tooltipPosition="left" [disabled]="account.id===currentUserUserID"/>
+                <!-- <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteAd(ad)" /> -->
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="accountDialog" [style]="{ width: '450px' }" header="Account Details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="username" class="block font-bold mb-3">username</label>
+                <input type="text" pInputText id="username" [(ngModel)]="account.username" [disabled]="true" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !account.username">Username is required.</small>
+            </div>
+            <div>
+                <label for="name" class="block font-bold mb-3">name</label>
+                <input type="text" pInputText id="name" [(ngModel)]="account.name" [disabled]="true" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !account.username">name is required.</small>
+            </div>
+            <div>
+                <label for="surname" class="block font-bold mb-3">surname</label>
+                <input type="text" pInputText id="surname" [(ngModel)]="account.surname" [disabled]="true" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !account.surname">surname is required.</small>
+            </div>
+            <div>
+                <label for="email" class="block font-bold mb-3">email</label>
+                <input type="text" pInputText id="email" [(ngModel)]="account.email" [disabled]="true" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !account.email">email is required.</small>
+            </div>
+            <div>
+                <label for="mobile" class="block font-bold mb-3">mobile</label>
+                <input type="text" pInputText id="mobile" [(ngModel)]="account.mobile" [disabled]="true" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !account.mobile">mobile is required.</small>
+            </div>
+            <div>
+                <label for="role" class="block font-bold mb-3">Status</label>
+                <p-select [(ngModel)]="account.role" inputId="role" [options]="roles" optionLabel="label" optionValue="label" placeholder="Select a role" [disabled]="true" fluid />
+            </div>
+
+           +
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Chiudi" icon="pi pi-times" text (click)="hideDialog()" />
+        <!-- <p-button label="Salva" icon="pi pi-check" (click)="saveAd()" /> -->
+    </ng-template>
+</p-dialog>
+
+
+<p-confirmdialog [style]="{ width: '450px' }" />

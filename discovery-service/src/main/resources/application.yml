@@ -1,0 +1,63 @@
+spring.application.name: discovery-service
+
+server:
+  port: ${SERVICE_PORT:8761}
+
+eureka:
+  instance:
+    hostname: ${SERVICE_HOSTNAME:localhost}
+  server:
+    # Switch off self-preservation. Will turn lease expiration on and evict all instances which no longer sent a heartbeat and whose lease has expired.
+    # Self-preservation is desirable for Eureka clusters and where network outages (e.g. between data centers) could be possible.
+    # Note: the lease validity / expiration is configured in the Eureka _client_ instances (see eureka.instance.lease-expiration-duration-in-seconds).
+    # See: https://github.com/Netflix/eureka/wiki/Server-Self-Preservation-Mode
+    # See: https://www.baeldung.com/eureka-self-preservation-renewal
+    enable-self-preservation: false
+    # Make sure this is set to the same value as the lease renewal interval in Eureka _client_ instances (or slightly higher)
+    # This value is relevant for Eureka's calculation of the 'current renewal threshold'.
+    # Specifically, the following equation is used: current renewal threshold = (60s / expected-client-renewal-interval-seconds) * renewal-percent-threshold * current number of client instances.
+    # In this case:
+    # - for one registered client: 60 / 3 * 0.5 * 1 = 10.
+    # - for two registered clients: 60 / 3 * 0,5 * 2 = 20.
+    expected-client-renewal-interval-seconds: 15 # Default: 30
+    # The interval in which the instance eviction task scans for instances with expired leases.
+    # Given in milliseconds.
+    eviction-interval-timer-in-ms: 2000 # Default 60000
+    # The cadence of calculating / adapting a new renewal threshold, i.e. how frequently a new threshold is calculated.
+    # The renewal threshold is used to distinguish, when Eureka should go into self-preservation mode
+    # (if eureka.server.enable-self-preservation: true). If less heartbeats than the threshold are received, Eureka assumes
+    # a network outage and protects itsel from evicting all service instances - assuming that the outage is over soon, and
+    # services are still there to continue sending heartbeats.
+    renewal-threshold-update-interval-ms: 2000 # Default: 15 * 60 * 1000
+    # The minimum renewal threshold, in percent. If less heartbeats than the given percentage are received per minute
+    # Eureka will go into self-preservation mode (if eureka.server.enable-self-preservation: true) and stop evicting
+    # service instances with expired leases that no longer send heartbeats - assuming there is only a temporal network
+    # outage.
+    renewal-percent-threshold: 0.5  # Default: 0.85
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${SERVICE_HOSTNAME:host.docker.internal}:${SERVICE_PORT:8761}/eureka/
+
+# Actuator Endpoint Configurations
+info: # /actuator/info
+  app:
+    description: "The service registry of the application."
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # expose all actuator web endpoints
+  endpoint:
+    refresh:
+      enabled: true # enable /actuator/refresh endpoint.
+    health:
+      show-details: always
+  info.env.enabled: true
+
+info.application:
+  name: discovery-service
+  description: Discovery Service for Real Estate Ads System
+  version: 0.0.1-SNAPSHOT

@@ -1,0 +1,68 @@
+@startuml
+!theme mars
+
+participant C [
+=":RealEstateAds Client"
+----
+""<<Client>>""
+]
+
+
+participant GW [
+=":Gateway Service"
+----
+""<<Service>>""
+]
+
+participant PS [
+=":Publish Service"
+----
+""<<REST Service Prosumer>>""
+]
+
+participant AS [
+=":Account Service"
+----
+""<<SOAP Service Provider>>""
+]
+
+participant WS [
+=":Wallet Service"
+----
+""<<REST Service Provider>>""
+]
+
+database Account as AccountDB
+database Wallet as WalletDB
+
+
+
+C->GW : openPublishAccount()
+activate GW
+GW -> PS : openPublishAccount()
+activate PS
+PS -> AS : openUserAccount()
+activate AS
+AS -> AccountDB : createAccount()
+activate AccountDB
+AccountDB --> AS : account created
+deactivate AccountDB
+AS --> PS : account
+
+PS --> WS : createAccountWallet()
+activate WS
+WS --> WalletDB : createWallet()
+activate WalletDB
+WalletDB --> WS : wallet created
+deactivate WalletDB
+WS --> PS : wallet created
+
+PS --> GW : wallet and account created
+deactivate PS
+
+GW --> C : response
+
+deactivate GW
+deactivate C
+
+@enduml

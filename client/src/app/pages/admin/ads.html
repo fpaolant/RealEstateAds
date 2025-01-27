@@ -1,0 +1,178 @@
+<p-toolbar styleClass="mb-6" [hidden]="true">
+    <ng-template #start>
+        <p-button label="Nuovo" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedAds()" [disabled]="!selectedAds || !selectedAds.length" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="ads()"
+    [rows]="pager.size"
+    [totalRecords]="totalAds"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['title', 'status']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedAds"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Ti sto mostrando da {first} a {last} di {totalRecords} annunci"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5, 10, 15, 20]"
+    (rowsChange)="onRowsChange($event)"
+    (firstChange)="onFirstChange($event)"
+    [lazy]="true"
+    
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Gestisci annunci</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Cerca..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th style="width: 3rem">ID</th>
+            <th pSortableColumn="title" style="min-width:16rem">
+                Titolo
+                <p-sortIcon field="title" />
+            </th>
+            <th>Foto</th>
+            <th pSortableColumn="price" style="min-width: 8rem">
+                Prezzo
+                <p-sortIcon field="price" />
+            </th>
+            <th pSortableColumn="squareMeters" style="min-width:5rem">
+                Mq
+                <p-sortIcon field="squareMeters" />
+            </th>
+            <th pSortableColumn="status" style="min-width: 1rem">
+                Stato
+                <p-sortIcon field="status" />
+            </th>
+            <th style="min-width: 12rem">
+                Azioni
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-ad>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="ad" />
+            </td>
+            <td style="min-width: 3rem">{{ ad.id }}</td>
+            <td style="min-width: 16rem">{{ ad.title }}</td>
+            <td>
+                <img src="{{'https://picsum.photos/380/200?'+ad.id}}" [alt]="ad.title" style="width: 64px" class="rounded" />
+            </td>
+            <td>{{ ad.price | currency: 'EUR' }}</td>
+            <td>{{ ad.squareMeters }}</td>
+            <td>
+                <p-tag [value]="ad.status" [severity]="getSeverity(ad.status)" />
+            </td>
+            <td>
+                <p-button icon="pi pi-eye" severity="info" class="mr-2" [rounded]="true" [outlined]="true" (click)="editAd(ad)" pTooltip="Visualizza" />
+                <p-button icon="pi pi-thumbs-down-fill" severity="danger" [rounded]="true" [outlined]="true" (click)="publishOpen(ad, 'reject')" pTooltip="Rifiuta" *ngIf="ad.status==='PENDING_APPROVAL' || ad.status==='PUBLISHED'" />
+                <p-button icon="pi pi-thumbs-up-fill" severity="success" [rounded]="true" [outlined]="true" (click)="publishOpen(ad, 'approve')" pTooltip="Approva e pubblica" *ngIf="ad.status==='PENDING_APPROVAL' || ad.status==='REJECTED'" />
+                <!-- <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteAd(ad)" /> -->
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="adDialog" [style]="{ width: '450px' }" header="Ad Details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <img src="https://picsum.photos/380/200" [alt]="ad.title" class="block m-auto pb-4" />
+            <div>
+                <label for="title" class="block font-bold mb-3">Title</label>
+                <input type="text" pInputText id="title" [(ngModel)]="ad.title" [disabled]="true" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !ad.title">Title is required.</small>
+            </div>
+            <div>
+                <label for="description" class="block font-bold mb-3">Description</label>
+                <textarea id="description" pTextarea [(ngModel)]="ad.description" required rows="3" cols="20" [disabled]="true" fluid></textarea>
+            </div>
+
+            <div>
+                <label for="status" class="block font-bold mb-3">Status</label>
+                <p-select [(ngModel)]="ad.status" inputId="status" [options]="statuses" optionLabel="label" optionValue="label" placeholder="Select a Status" [disabled]="true" fluid />
+            </div>
+
+            <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-6">
+                    <label for="price" class="block font-bold mb-3">Price</label>
+                    <p-inputnumber id="price" [(ngModel)]="ad.price" mode="currency" currency="EUR" locale="it-IT" [disabled]="true" fluid />
+                </div>
+                <div class="col-span-6">
+                    <label for="squareMaters" class="block font-bold mb-3">Mq</label>
+                    <p-inputnumber id="squareMaters" [(ngModel)]="ad.squareMeters" [disabled]="true" fluid />
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Chiudi" icon="pi pi-times" text (click)="hideDialog()" />
+        <!-- <p-button label="Salva" icon="pi pi-check" (click)="saveAd()" /> -->
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="publishDialog" [style]="{ width: '450px' }" header="Ad reject" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <img src="https://picsum.photos/380/200" [alt]="ad.title" class="block m-auto pb-4" />
+            <div>
+                <label for="title" class="block font-bold mb-3">Title</label>
+                <input type="text" pInputText id="title" [(ngModel)]="ad.title" [disabled]="true" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !ad.title">Title is required.</small>
+            </div>
+            <div>
+                <label for="description" class="block font-bold mb-3">Description</label>
+                <textarea id="description" pTextarea [(ngModel)]="ad.description" required rows="3" cols="20" [disabled]="true" fluid></textarea>
+            </div>
+
+            <div>
+                <label for="status" class="block font-bold mb-3">Status</label>
+                <p-select [(ngModel)]="ad.status" inputId="status" [options]="statuses" optionLabel="label" optionValue="label" placeholder="Select a Status" [disabled]="true" fluid />
+            </div>
+
+            <div class="grid grid-cols-12 gap-4">
+                <div class="col-span-6">
+                    <label for="price" class="block font-bold mb-3">Price</label>
+                    <p-inputnumber id="price" [(ngModel)]="ad.price" mode="currency" currency="EUR" locale="it-IT" [disabled]="true" fluid />
+                </div>
+                <div class="col-span-6">
+                    <label for="squareMaters" class="block font-bold mb-3">Mq</label>
+                    <p-inputnumber id="squareMaters" [(ngModel)]="ad.squareMeters" [disabled]="true" fluid />
+                </div>
+            </div>
+
+            <div *ngIf="publishDialogAction==='reject'">
+                <label for="description" class="block font-bold mb-3">Motivazione rifiuto</label>
+                <textarea id="description" pTextarea [(ngModel)]="rejectReason" required rows="3" cols="20" fluid></textarea>
+                <small class="text-red-500" *ngIf="submitted && !ad.title">La motivazione è richiesta.</small>
+            </div>
+
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Chiudi" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button *ngIf="publishDialogAction==='reject'" label="Rifiuta" severity="danger" icon="pi pi-check" (click)="rejectAd(ad)" />
+        <p-button *ngIf="publishDialogAction==='approve'" label="Approva e Pubblica" severity="success" icon="pi pi-check" (click)="approveAd(ad)" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />

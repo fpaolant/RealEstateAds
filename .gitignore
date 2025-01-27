@@ -1,0 +1,16 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven
+target/
+!target/*.jar
+
+# Log files
+*.log
+
+# IDE specific
+*.class
+
+# Misc
+.DS_Store

@@ -1,0 +1,80 @@
+@startuml
+
+
+skinparam usecase {
+
+BackgroundColor<< Main >> #e45756
+BorderColor<< Main >> #822727
+FontColor<< Main >> White
+
+}
+
+:Guest:
+
+package "System Users" as SU {
+:User:
+:Admin:
+
+}
+
+rectangle "RealEstateAds System"  {
+(Login) << Main >>
+left to right direction
+
+(Ricerca Annunci avanzata)
+(Ricerca Annunci semplice)
+(Dettagli Account)
+(Annunci pubblicati)
+(Annunci pubblicati) ..> (Dettagli Annuncio) : <<include>>
+(Dettagli Wallet)
+(Ricarica Wallet)
+(Pubblica Annuncio)
+(Approva Annuncio)
+(Lista Annunci)
+(Lista Annunci) ..> (Dettagli Annuncio) : <<include>>
+(Dettagli Annuncio)
+(Rigetta Annuncio)
+(Promuovi User ad Admin)
+
+
+(Ricerca Annunci) << Main >>
+(Ricerca Annunci) ..> (Ricerca Annunci semplice) : <<include>>
+(Ricerca Annunci) ..> (Ricerca Annunci avanzata) : <<include>>
+
+
+(Registrazione Account con Wallet) << Main >>
+(Gestione Operazioni di pubblicazione) << Main >> as PUB
+PUB ..> (Approva Annuncio) : <<include>>
+PUB ..> (Rigetta Annuncio) : <<include>>
+PUB ..> (Lista Annunci) : <<include>>
+
+(Gestione Account) << Main >>
+(Gestione Account) ..> (Promuovi User ad Admin) : <<include>>
+(Gestione Account) ..> (Dettagli Account) : <<include>>
+
+(Gestione Wallet) << Main >>
+(Gestione Wallet) ..> (Dettagli Wallet) : <<include>>
+(Gestione Wallet) ..> (Ricarica Wallet) : <<include>>
+
+(Gestione Pubblicazione) << Main >>
+(Gestione Pubblicazione) ..> (Pubblica Annuncio) : <<include>>
+(Gestione Pubblicazione) ..> (Annunci pubblicati) : <<include>>
+
+
+
+
+Guest --> (Ricerca Annunci)
+Guest --> (Registrazione Account con Wallet)
+Guest ----> (Login)
+
+SU ----> (Login)
+SU --> (Ricerca Annunci)
+User --> (Gestione Pubblicazione)
+User --> (Gestione Wallet)
+Admin --> (Gestione Pubblicazione)
+Admin --> (Gestione Account)
+Admin --> PUB
+
+}
+
+@enduml

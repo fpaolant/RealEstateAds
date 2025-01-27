@@ -1,0 +1,41 @@
+<div class="card">
+    <div class="font-semibold text-xl mb-4">Ricerca avanzata</div>
+    <p>In questa pagina potrai cercare gli annunci più vicini ad una determinata posizione</p>
+</div>
+<div class="card">
+    <div class="grid grid-cols-12 gap-12 mb-8">
+
+        <div class="col-span-10 lg:col-span-10 xl:col-span-10">
+            <rea-map 
+            (centerChanged)="onCenterChanged($event)"
+            [radius] = "radiusControl.value"
+            mapHeight="250px"
+            idMap="advancedSearchMap"
+            />
+        </div>
+        <div class="col-span-2 lg:col-span-2 xl:col-span-2">
+            
+            <label for="radius1" class="block text-surface-900 dark:text-surface-0 font-medium mb-3">Seleziona un raggio</label>
+    <p-slider class="w-full" id="radius1" orientation="vertical" class="block mb-8" [formControl]="radiusControl" [step]="500"
+    min = "500"
+    max = "500000"/>
+
+            <span class="block text-muted-color font-medium mb-4">{{ (radiusControl.value)? radiusControl.value/1000: 0 }} km</span>
+
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <rea-list 
+    class="block mb-8"
+    [ads]="ads" 
+    title="Risultati della ricerca per ({{ centerCoordinates?.lat | number:'1.4-4' }}, {{ centerCoordinates?.lng | number:'1.4-4' }})  
+    e raggio di {{ (radiusControl.value)? radiusControl.value/1000: 0 }} km" 
+    [gridSelect]="false" 
+    [loading]="adsLoading" />
+
+    
+</div>
+
+

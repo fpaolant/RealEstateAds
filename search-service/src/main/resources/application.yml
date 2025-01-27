@@ -1,0 +1,49 @@
+spring.application:
+  name: search-service
+
+management:
+  endpoints.web.exposure.include: health,info
+  info.env.enabled: true
+
+info.application:
+  name: SearchService
+  description: Search Service for Real Estate Ads System
+  version: 0.0.1-SNAPSHOT
+
+server:
+  port: 7140
+
+cxf:
+  path: /services
+  servlet.init:
+    service-list-path: /info
+  jaxrs:
+    component-scan: true
+    classes-scan-packages: it.disim.univaq.sose.search_service.config, it.disim.univaq.sose.search_service.service
+  logging:
+    enabled: true
+    pretty-print: true
+    in-memory-threshold: 1024
+    limit: 1000
+
+---
+
+eureka:
+  client:
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://${EUREKA_SERVER_HOSTNAME:host.docker.internal}:${EUREKA_SERVER_PORT:8761}/eureka/ # http://localhost:7002/eureka/
+  instance:
+    # Request a lease with a validity of 11 seconds. If until then the
+    # lease has not been renewed, it expires and the Eureka server can evict it.
+    # Default: 90s
+    lease-expiration-duration-in-seconds: 11
+    # The cadence of lease renewal, i.e. how often a heartbeat is sent to Eureka server.
+    # In this case every 5 seconds. Use this only for development / debugging. In production use the ...
+    # Default: 30s
+    lease-renewal-interval-in-seconds: 5
+    prefer-ip-address: true
+    statusPageUrlPath: /services/info
+    healthCheckUrlPath: /actuator/health
+    metadataMap:
+      servletPath: /services

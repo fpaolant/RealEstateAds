@@ -1,0 +1,467 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://webservice.ads_service.sose.univaq.disim.it/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="AdsService" targetNamespace="http://webservice.ads_service.sose.univaq.disim.it/">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://webservice.ads_service.sose.univaq.disim.it/" xmlns:ns1="http://service.ads_service.sose.univaq.disim.it/" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://webservice.ads_service.sose.univaq.disim.it/" version="1.0">
+            <xs:import namespace="http://service.ads_service.sose.univaq.disim.it/"/>
+            <xs:element name="approveAd" type="tns:approveAd"/>
+            <xs:element name="createAd" type="tns:createAd"/>
+            <xs:element name="getAdDetails" type="tns:getAdDetails"/>
+            <xs:element name="getAds" type="tns:getAds"/>
+            <xs:element name="getAdsByAccountId" type="tns:getAdsByAccountId"/>
+            <xs:element name="getAdsByCity" type="tns:getAdsByCity"/>
+            <xs:element name="getAdsByTitle" type="tns:getAdsByTitle"/>
+            <xs:element name="getAdsByTitlePaginated" type="tns:getAdsByTitlePaginated"/>
+            <xs:element name="getAdsMaxPrice" type="tns:getAdsMaxPrice"/>
+            <xs:element name="rejectAd" type="tns:rejectAd"/>
+            <xs:complexType name="getAdsByAccountId">
+                <xs:sequence>
+                    <xs:element name="accountId" type="xs:long"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAdsResponse">
+                <xs:sequence>
+                    <xs:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="GetAdsResponse" type="tns:AdResponse"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="AdResponse">
+                <xs:sequence>
+                    <xs:element name="id" type="xs:long"/>
+                    <xs:element name="title" type="xs:string"/>
+                    <xs:element minOccurs="0" name="description" type="xs:string"/>
+                    <xs:element name="squareMeters" type="xs:int"/>
+                    <xs:element name="price" type="xs:decimal"/>
+                    <xs:element name="location" type="xs:string"/>
+                    <xs:element name="latitude" type="xs:double"/>
+                    <xs:element name="longitude" type="xs:double"/>
+                    <xs:element name="status" type="xs:string"/>
+                    <xs:element name="accountId" type="xs:long"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAds">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="sortBy" type="xs:string"/>
+                    <xs:element minOccurs="0" name="sortOrder" type="xs:string"/>
+                    <xs:element name="page" type="xs:int"/>
+                    <xs:element name="size" type="xs:int"/>
+                    <xs:element minOccurs="0" name="status" type="tns:adStatus"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAdPaginatedResponse">
+                <xs:sequence>
+                    <xs:element form="qualified" minOccurs="0" name="GetAdPaginatedResponse" type="tns:PaginatedResponse"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="PaginatedResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="adResponse" type="tns:AdResponse"/>
+                    <xs:element name="currentPage" type="xs:int"/>
+                    <xs:element name="totalPages" type="xs:int"/>
+                    <xs:element name="totalItems" type="xs:long"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="approveAd">
+                <xs:sequence>
+                    <xs:element name="id" type="xs:long"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAdApproveResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" ref="ns1:GetAdApproveResponse"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="ApproveAdResponse">
+                <xs:sequence>
+                    <xs:element name="success" type="xs:boolean"/>
+                    <xs:element name="message" type="xs:string"/>
+                    <xs:element name="adId" type="xs:long"/>
+                    <xs:element name="status" type="tns:adStatus"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAdsByTitlePaginated">
+                <xs:sequence>
+                    <xs:element name="title" type="xs:string"/>
+                    <xs:element form="qualified" minOccurs="0" name="status" type="tns:adStatus"/>
+                    <xs:element minOccurs="0" name="sortBy" type="xs:string"/>
+                    <xs:element minOccurs="0" name="sortOrder" type="xs:string"/>
+                    <xs:element name="page" type="xs:int"/>
+                    <xs:element name="size" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAdDetails">
+                <xs:sequence>
+                    <xs:element name="id" type="xs:long"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAdDetailsResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" ref="ns1:GetAdDetailsResponse"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAdsByCity">
+                <xs:sequence>
+                    <xs:element name="city" type="xs:string"/>
+                    <xs:element form="qualified" minOccurs="0" name="maxPrice" type="xs:decimal"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAdsByTitle">
+                <xs:sequence>
+                    <xs:element name="title" type="xs:string"/>
+                    <xs:element minOccurs="0" name="status" type="tns:adStatus"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAdsMaxPrice">
+                <xs:sequence>
+                    <xs:element name="maxPrice" type="xs:decimal"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="rejectAd">
+                <xs:sequence>
+                    <xs:element name="id" type="xs:long"/>
+                    <xs:element name="reason" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAdRejectResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" ref="ns1:GetAdRejectResponse"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="RejectAdResponse">
+                <xs:sequence>
+                    <xs:element name="success" type="xs:boolean"/>
+                    <xs:element minOccurs="0" name="message" type="xs:string"/>
+                    <xs:element name="adId" type="xs:long"/>
+                    <xs:element name="status" type="tns:adStatus"/>
+                    <xs:element name="rejectionReason" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="createAd">
+                <xs:sequence>
+                    <xs:element name="adRequest" type="tns:AdRequest"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="AdRequest">
+                <xs:sequence>
+                    <xs:element name="title" type="xs:string"/>
+                    <xs:element minOccurs="0" name="description" type="xs:string"/>
+                    <xs:element name="squareMeters" type="xs:int"/>
+                    <xs:element name="price" type="xs:decimal"/>
+                    <xs:element name="location" type="xs:string"/>
+                    <xs:element name="latitude" type="xs:double"/>
+                    <xs:element name="longitude" type="xs:double"/>
+                    <xs:element name="accountId" type="xs:long"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getAdResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" ref="ns1:GetAdResponse"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:simpleType name="adStatus">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="PENDING_APPROVAL"/>
+                    <xs:enumeration value="APPROVED"/>
+                    <xs:enumeration value="REJECTED"/>
+                    <xs:enumeration value="PUBLISHED"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:element name="getAdsResponse" nillable="true" type="tns:getAdsResponse"/>
+            <xs:element name="getAdPaginatedResponse" nillable="true" type="tns:getAdPaginatedResponse"/>
+            <xs:element name="getAdApproveResponse" nillable="true" type="tns:getAdApproveResponse"/>
+            <xs:element name="NotFoundException" type="tns:NotFoundException"/>
+            <xs:complexType name="NotFoundException">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="message" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="getAdDetailsResponse" nillable="true" type="tns:getAdDetailsResponse"/>
+            <xs:element name="AdException" type="tns:AdException"/>
+            <xs:complexType name="AdException">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="message" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="getAdRejectResponse" nillable="true" type="tns:getAdRejectResponse"/>
+            <xs:element name="getAdResponse" nillable="true" type="tns:getAdResponse"/>
+        </xs:schema>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://webservice.ads_service.sose.univaq.disim.it/" targetNamespace="http://service.ads_service.sose.univaq.disim.it/" version="1.0">
+
+            <xs:import namespace="http://webservice.ads_service.sose.univaq.disim.it/"/>
+
+            <xs:element name="GetAdApproveResponse" type="ns1:ApproveAdResponse"/>
+
+            <xs:element name="GetAdDetailsResponse" type="ns1:AdResponse"/>
+
+            <xs:element name="GetAdRejectResponse" type="ns1:RejectAdResponse"/>
+
+            <xs:element name="GetAdResponse" type="ns1:AdResponse"/>
+
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="getAdsByAccountId">
+        <wsdl:part element="tns:getAdsByAccountId" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdsResponse">
+        <wsdl:part element="tns:getAdPaginatedResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdsByAccountIdResponse">
+        <wsdl:part element="tns:getAdsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdDetails">
+        <wsdl:part element="tns:getAdDetails" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="NotFoundException">
+        <wsdl:part element="tns:NotFoundException" name="NotFoundException">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdsByCityResponse">
+        <wsdl:part element="tns:getAdsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="AdException">
+        <wsdl:part element="tns:AdException" name="AdException">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAds">
+        <wsdl:part element="tns:getAds" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="rejectAdResponse">
+        <wsdl:part element="tns:getAdRejectResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="createAdResponse">
+        <wsdl:part element="tns:getAdResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="approveAd">
+        <wsdl:part element="tns:approveAd" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdsByTitlePaginated">
+        <wsdl:part element="tns:getAdsByTitlePaginated" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdDetailsResponse">
+        <wsdl:part element="tns:getAdDetailsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdsMaxPriceResponse">
+        <wsdl:part element="tns:getAdsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdsByTitleResponse">
+        <wsdl:part element="tns:getAdsResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdsByCity">
+        <wsdl:part element="tns:getAdsByCity" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdsByTitle">
+        <wsdl:part element="tns:getAdsByTitle" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdsMaxPrice">
+        <wsdl:part element="tns:getAdsMaxPrice" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="rejectAd">
+        <wsdl:part element="tns:rejectAd" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="approveAdResponse">
+        <wsdl:part element="tns:getAdApproveResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="createAd">
+        <wsdl:part element="tns:createAd" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getAdsByTitlePaginatedResponse">
+        <wsdl:part element="tns:getAdPaginatedResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="AdsService">
+        <wsdl:operation name="getAdsByAccountId">
+            <wsdl:input message="tns:getAdsByAccountId" name="getAdsByAccountId">
+            </wsdl:input>
+            <wsdl:output message="tns:getAdsByAccountIdResponse" name="getAdsByAccountIdResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAds">
+            <wsdl:input message="tns:getAds" name="getAds">
+            </wsdl:input>
+            <wsdl:output message="tns:getAdsResponse" name="getAdsResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="approveAd">
+            <wsdl:input message="tns:approveAd" name="approveAd">
+            </wsdl:input>
+            <wsdl:output message="tns:approveAdResponse" name="approveAdResponse">
+            </wsdl:output>
+            <wsdl:fault message="tns:NotFoundException" name="NotFoundException">
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getAdsByTitlePaginated">
+            <wsdl:input message="tns:getAdsByTitlePaginated" name="getAdsByTitlePaginated">
+            </wsdl:input>
+            <wsdl:output message="tns:getAdsByTitlePaginatedResponse" name="getAdsByTitlePaginatedResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAdDetails">
+            <wsdl:input message="tns:getAdDetails" name="getAdDetails">
+            </wsdl:input>
+            <wsdl:output message="tns:getAdDetailsResponse" name="getAdDetailsResponse">
+            </wsdl:output>
+            <wsdl:fault message="tns:NotFoundException" name="NotFoundException">
+            </wsdl:fault>
+            <wsdl:fault message="tns:AdException" name="AdException">
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getAdsByCity">
+            <wsdl:input message="tns:getAdsByCity" name="getAdsByCity">
+            </wsdl:input>
+            <wsdl:output message="tns:getAdsByCityResponse" name="getAdsByCityResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAdsByTitle">
+            <wsdl:input message="tns:getAdsByTitle" name="getAdsByTitle">
+            </wsdl:input>
+            <wsdl:output message="tns:getAdsByTitleResponse" name="getAdsByTitleResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAdsMaxPrice">
+            <wsdl:input message="tns:getAdsMaxPrice" name="getAdsMaxPrice">
+            </wsdl:input>
+            <wsdl:output message="tns:getAdsMaxPriceResponse" name="getAdsMaxPriceResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="rejectAd">
+            <wsdl:input message="tns:rejectAd" name="rejectAd">
+            </wsdl:input>
+            <wsdl:output message="tns:rejectAdResponse" name="rejectAdResponse">
+            </wsdl:output>
+            <wsdl:fault message="tns:NotFoundException" name="NotFoundException">
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="createAd">
+            <wsdl:input message="tns:createAd" name="createAd">
+            </wsdl:input>
+            <wsdl:output message="tns:createAdResponse" name="createAdResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="AdsServiceSoapBinding" type="tns:AdsService">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getAds">
+            <soap:operation soapAction="urn:GetAds" style="document"/>
+            <wsdl:input name="getAds">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getAdsResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAdsByAccountId">
+            <soap:operation soapAction="urn:GetAdsByAccountId" style="document"/>
+            <wsdl:input name="getAdsByAccountId">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getAdsByAccountIdResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="approveAd">
+            <soap:operation soapAction="urn:ApproveAd" style="document"/>
+            <wsdl:input name="approveAd">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="approveAdResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="NotFoundException">
+                <soap:fault name="NotFoundException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getAdsByTitlePaginated">
+            <soap:operation soapAction="urn:getAdsByTitlePaginated" style="document"/>
+            <wsdl:input name="getAdsByTitlePaginated">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getAdsByTitlePaginatedResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAdDetails">
+            <soap:operation soapAction="urn:GetAdDetails" style="document"/>
+            <wsdl:input name="getAdDetails">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getAdDetailsResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="NotFoundException">
+                <soap:fault name="NotFoundException" use="literal"/>
+            </wsdl:fault>
+            <wsdl:fault name="AdException">
+                <soap:fault name="AdException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getAdsByCity">
+            <soap:operation soapAction="urn:getAdsByCity" style="document"/>
+            <wsdl:input name="getAdsByCity">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getAdsByCityResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAdsByTitle">
+            <soap:operation soapAction="urn:getAdsByTitle" style="document"/>
+            <wsdl:input name="getAdsByTitle">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getAdsByTitleResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAdsMaxPrice">
+            <soap:operation soapAction="urn:GetAdsMaxPrice" style="document"/>
+            <wsdl:input name="getAdsMaxPrice">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getAdsMaxPriceResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="rejectAd">
+            <soap:operation soapAction="urn:RejectAd" style="document"/>
+            <wsdl:input name="rejectAd">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="rejectAdResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="NotFoundException">
+                <soap:fault name="NotFoundException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="createAd">
+            <soap:operation soapAction="urn:createAd" style="document"/>
+            <wsdl:input name="createAd">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="createAdResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="AdsService">
+        <wsdl:port binding="tns:AdsServiceSoapBinding" name="AdsPort">
+            <soap:address location="http://localhost:7130/services/AdsService"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

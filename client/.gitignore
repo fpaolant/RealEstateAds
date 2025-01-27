@@ -1,0 +1,44 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Compilati Angular
+dist/
+out-tsc/
+.angular/
+
+# Ambiente
+.env
+.env.local
+.env.*.local
+
+# IDE e editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs e file temporanei
+*.log
+tmp/
+temp/
+
+# Angular specific files
+coverage/
+*.ngfactory.ts
+*.ngsummary.json
+
+# Pacchetti e build cache
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# Altri
+*.bak
+*.orig

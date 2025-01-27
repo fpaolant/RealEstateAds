@@ -1,0 +1,42 @@
+@startuml
+!theme mars
+
+
+participant C [
+=":RealEstateAds Client"
+----
+""<<Client>>""
+]
+
+
+participant GW [
+=":Gateway Service"
+----
+""<<Service>>""
+]
+
+participant AS [
+=":Account Service"
+----
+""<<REST Service Provider>>""
+]
+
+database Account
+
+
+
+
+C->GW : login()
+GW -> AS : login()
+AS -> Account : getAccountFromUsername
+
+Account -> AS : accountResponse
+
+AS -> AS : checkCredentialsAndGenerateJWT
+
+AS --> AS : JWT token
+
+AS --> GW : JWT token
+
+GW --> C : AuthResponse
+@enduml

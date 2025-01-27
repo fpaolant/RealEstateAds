@@ -1,0 +1,881 @@
+openapi: 3.0.1
+info:
+  title: Wallet Service System
+  description: This is Wallet Service. Uses Apache CXF and Spring Boot on JAX-RS.
+  contact:
+    name: System team
+  license:
+    name: Apache 2.0 License
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1-SNAPSHOT
+servers:
+  - url: http://localhost:7160/services
+paths:
+  /api/wallet/charge:
+    post:
+      description: Charge Wallet
+      operationId: chargeWallet_1
+      requestBody:
+        description: ChargeWalletRequest
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChargeWalletRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/ChargeWalletRequest"
+        required: true
+      responses:
+        "200":
+          description: Wallet charged
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+        "400":
+          description: Insufficient balance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Wallet not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/wallet/create:
+    post:
+      description: Create a new Wallet
+      operationId: createWallet_1
+      requestBody:
+        description: Wallet to be saved
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWalletRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/CreateWalletRequest"
+        required: true
+      responses:
+        "201":
+          description: Wallet created
+          headers:
+            Location:
+              description: The URL to retrieve the created wallet
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+        "409":
+          description: Wallet already exists for the account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/wallet/{walletId}:
+    get:
+      description: Get Wallet Details by walletId
+      operationId: getWalletByWalletId_1
+      parameters:
+        - name: walletId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Wallet found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+        "404":
+          description: Wallet not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/wallet/account/{accountId}:
+    get:
+      description: Get Wallet Details by accountId
+      operationId: getWalletByAccountId_1
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Wallet found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+        "404":
+          description: Account Wallet not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/wallet/recharge:
+    post:
+      description: Recharge Wallet
+      operationId: reChargeWallet_1
+      requestBody:
+        description: ChargeWalletRequest
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChargeWalletRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/ChargeWalletRequest"
+        required: true
+      responses:
+        "200":
+          description: Wallet recharged
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/WalletResponse"
+        "404":
+          description: Wallet not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    WalletResponse:
+      required:
+        - accountId
+        - balance
+        - createDate
+        - id
+        - updateDate
+        - walletId
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        walletId:
+          type: string
+          format: uuid
+        accountId:
+          type: integer
+          format: int64
+        balance:
+          type: number
+        updateDate:
+          type: string
+          format: date-time
+        createDate:
+          type: string
+          format: date-time
+      xml:
+        name: WalletResponse
+    ContentDisposition:
+      type: object
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+        filename:
+          type: string
+        charset:
+          type: object
+          properties:
+            registered:
+              type: boolean
+        size:
+          type: integer
+          format: int64
+        creationDate:
+          type: string
+          format: date-time
+        modificationDate:
+          type: string
+          format: date-time
+        readDate:
+          type: string
+          format: date-time
+        attachment:
+          type: boolean
+        formData:
+          type: boolean
+        inline:
+          type: boolean
+    ErrorResponse:
+      type: object
+      properties:
+        detailMessageArguments:
+          type: array
+          items:
+            type: object
+        detailMessageCode:
+          type: string
+        titleMessageCode:
+          type: string
+        typeMessageCode:
+          type: string
+        statusCode:
+          $ref: "#/components/schemas/HttpStatusCode"
+        body:
+          $ref: "#/components/schemas/ProblemDetail"
+        headers:
+          type: object
+          properties:
+            empty:
+              type: boolean
+            location:
+              type: string
+              format: uri
+            host:
+              type: object
+              properties:
+                address:
+                  type: object
+                  properties:
+                    hostAddress:
+                      type: string
+                    address:
+                      type: array
+                      items:
+                        type: string
+                        format: byte
+                    hostName:
+                      type: string
+                    linkLocalAddress:
+                      type: boolean
+                    multicastAddress:
+                      type: boolean
+                    anyLocalAddress:
+                      type: boolean
+                    loopbackAddress:
+                      type: boolean
+                    siteLocalAddress:
+                      type: boolean
+                    mcglobal:
+                      type: boolean
+                    mcnodeLocal:
+                      type: boolean
+                    mclinkLocal:
+                      type: boolean
+                    mcsiteLocal:
+                      type: boolean
+                    mcorgLocal:
+                      type: boolean
+                    canonicalHostName:
+                      type: string
+                port:
+                  type: integer
+                  format: int32
+                unresolved:
+                  type: boolean
+                hostName:
+                  type: string
+                hostString:
+                  type: string
+            all:
+              type: object
+              additionalProperties:
+                type: string
+              writeOnly: true
+            lastModified:
+              type: integer
+              format: int64
+            date:
+              type: integer
+              format: int64
+            contentLength:
+              type: integer
+              format: int64
+            accessControlAllowOrigin:
+              type: string
+            accessControlAllowMethods:
+              type: array
+              items:
+                $ref: "#/components/schemas/HttpMethod"
+            accessControlAllowHeaders:
+              type: array
+              items:
+                type: string
+            accessControlExposeHeaders:
+              type: array
+              items:
+                type: string
+            accessControlAllowCredentials:
+              type: boolean
+            accessControlMaxAge:
+              type: integer
+              format: int64
+            accessControlRequestMethod:
+              $ref: "#/components/schemas/HttpMethod"
+            accessControlRequestHeaders:
+              type: array
+              items:
+                type: string
+            accept:
+              type: array
+              items:
+                $ref: "#/components/schemas/MediaType"
+            range:
+              type: array
+              items:
+                $ref: "#/components/schemas/HttpRange"
+            vary:
+              type: array
+              items:
+                type: string
+            upgrade:
+              type: string
+            contentLanguage:
+              type: object
+              properties:
+                language:
+                  type: string
+                displayName:
+                  type: string
+                country:
+                  type: string
+                variant:
+                  type: string
+                script:
+                  type: string
+                unicodeLocaleAttributes:
+                  uniqueItems: true
+                  type: array
+                  items:
+                    type: string
+                unicodeLocaleKeys:
+                  uniqueItems: true
+                  type: array
+                  items:
+                    type: string
+                displayLanguage:
+                  type: string
+                displayScript:
+                  type: string
+                displayCountry:
+                  type: string
+                displayVariant:
+                  type: string
+                extensionKeys:
+                  uniqueItems: true
+                  type: array
+                  items:
+                    type: string
+                iso3Language:
+                  type: string
+                iso3Country:
+                  type: string
+            origin:
+              type: string
+            acceptPatch:
+              type: array
+              items:
+                $ref: "#/components/schemas/MediaType"
+            acceptLanguageAsLocales:
+              type: array
+              items:
+                type: object
+                properties:
+                  language:
+                    type: string
+                  displayName:
+                    type: string
+                  country:
+                    type: string
+                  variant:
+                    type: string
+                  script:
+                    type: string
+                  unicodeLocaleAttributes:
+                    uniqueItems: true
+                    type: array
+                    items:
+                      type: string
+                  unicodeLocaleKeys:
+                    uniqueItems: true
+                    type: array
+                    items:
+                      type: string
+                  displayLanguage:
+                    type: string
+                  displayScript:
+                    type: string
+                  displayCountry:
+                    type: string
+                  displayVariant:
+                    type: string
+                  extensionKeys:
+                    uniqueItems: true
+                    type: array
+                    items:
+                      type: string
+                  iso3Language:
+                    type: string
+                  iso3Country:
+                    type: string
+            contentDisposition:
+              $ref: "#/components/schemas/ContentDisposition"
+            ifUnmodifiedSince:
+              type: integer
+              format: int64
+            connection:
+              type: array
+              items:
+                type: string
+            etag:
+              type: string
+            ifNoneMatch:
+              type: array
+              items:
+                type: string
+            ifMatch:
+              type: array
+              items:
+                type: string
+            acceptLanguage:
+              type: array
+              items:
+                type: object
+                properties:
+                  range:
+                    type: string
+                  weight:
+                    type: number
+                    format: double
+            bearerAuth:
+              type: string
+              writeOnly: true
+            expires:
+              type: integer
+              format: int64
+            cacheControl:
+              type: string
+            acceptCharset:
+              type: array
+              items:
+                type: object
+                properties:
+                  registered:
+                    type: boolean
+            basicAuth:
+              type: string
+              writeOnly: true
+            allow:
+              uniqueItems: true
+              type: array
+              items:
+                $ref: "#/components/schemas/HttpMethod"
+            contentType:
+              $ref: "#/components/schemas/MediaType"
+            pragma:
+              type: string
+            ifModifiedSince:
+              type: integer
+              format: int64
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    HttpHeaders:
+      type: object
+      properties:
+        empty:
+          type: boolean
+        location:
+          type: string
+          format: uri
+        host:
+          type: object
+          properties:
+            address:
+              type: object
+              properties:
+                hostAddress:
+                  type: string
+                address:
+                  type: array
+                  items:
+                    type: string
+                    format: byte
+                hostName:
+                  type: string
+                linkLocalAddress:
+                  type: boolean
+                multicastAddress:
+                  type: boolean
+                anyLocalAddress:
+                  type: boolean
+                loopbackAddress:
+                  type: boolean
+                siteLocalAddress:
+                  type: boolean
+                mcglobal:
+                  type: boolean
+                mcnodeLocal:
+                  type: boolean
+                mclinkLocal:
+                  type: boolean
+                mcsiteLocal:
+                  type: boolean
+                mcorgLocal:
+                  type: boolean
+                canonicalHostName:
+                  type: string
+            port:
+              type: integer
+              format: int32
+            unresolved:
+              type: boolean
+            hostName:
+              type: string
+            hostString:
+              type: string
+        all:
+          type: object
+          additionalProperties:
+            type: string
+          writeOnly: true
+        lastModified:
+          type: integer
+          format: int64
+        date:
+          type: integer
+          format: int64
+        contentLength:
+          type: integer
+          format: int64
+        accessControlAllowOrigin:
+          type: string
+        accessControlAllowMethods:
+          type: array
+          items:
+            $ref: "#/components/schemas/HttpMethod"
+        accessControlAllowHeaders:
+          type: array
+          items:
+            type: string
+        accessControlExposeHeaders:
+          type: array
+          items:
+            type: string
+        accessControlAllowCredentials:
+          type: boolean
+        accessControlMaxAge:
+          type: integer
+          format: int64
+        accessControlRequestMethod:
+          $ref: "#/components/schemas/HttpMethod"
+        accessControlRequestHeaders:
+          type: array
+          items:
+            type: string
+        accept:
+          type: array
+          items:
+            $ref: "#/components/schemas/MediaType"
+        range:
+          type: array
+          items:
+            $ref: "#/components/schemas/HttpRange"
+        vary:
+          type: array
+          items:
+            type: string
+        upgrade:
+          type: string
+        contentLanguage:
+          type: object
+          properties:
+            language:
+              type: string
+            displayName:
+              type: string
+            country:
+              type: string
+            variant:
+              type: string
+            script:
+              type: string
+            unicodeLocaleAttributes:
+              uniqueItems: true
+              type: array
+              items:
+                type: string
+            unicodeLocaleKeys:
+              uniqueItems: true
+              type: array
+              items:
+                type: string
+            displayLanguage:
+              type: string
+            displayScript:
+              type: string
+            displayCountry:
+              type: string
+            displayVariant:
+              type: string
+            extensionKeys:
+              uniqueItems: true
+              type: array
+              items:
+                type: string
+            iso3Language:
+              type: string
+            iso3Country:
+              type: string
+        origin:
+          type: string
+        acceptPatch:
+          type: array
+          items:
+            $ref: "#/components/schemas/MediaType"
+        acceptLanguageAsLocales:
+          type: array
+          items:
+            type: object
+            properties:
+              language:
+                type: string
+              displayName:
+                type: string
+              country:
+                type: string
+              variant:
+                type: string
+              script:
+                type: string
+              unicodeLocaleAttributes:
+                uniqueItems: true
+                type: array
+                items:
+                  type: string
+              unicodeLocaleKeys:
+                uniqueItems: true
+                type: array
+                items:
+                  type: string
+              displayLanguage:
+                type: string
+              displayScript:
+                type: string
+              displayCountry:
+                type: string
+              displayVariant:
+                type: string
+              extensionKeys:
+                uniqueItems: true
+                type: array
+                items:
+                  type: string
+              iso3Language:
+                type: string
+              iso3Country:
+                type: string
+        contentDisposition:
+          $ref: "#/components/schemas/ContentDisposition"
+        ifUnmodifiedSince:
+          type: integer
+          format: int64
+        connection:
+          type: array
+          items:
+            type: string
+        etag:
+          type: string
+        ifNoneMatch:
+          type: array
+          items:
+            type: string
+        ifMatch:
+          type: array
+          items:
+            type: string
+        acceptLanguage:
+          type: array
+          items:
+            type: object
+            properties:
+              range:
+                type: string
+              weight:
+                type: number
+                format: double
+        bearerAuth:
+          type: string
+          writeOnly: true
+        expires:
+          type: integer
+          format: int64
+        cacheControl:
+          type: string
+        acceptCharset:
+          type: array
+          items:
+            type: object
+            properties:
+              registered:
+                type: boolean
+        basicAuth:
+          type: string
+          writeOnly: true
+        allow:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/HttpMethod"
+        contentType:
+          $ref: "#/components/schemas/MediaType"
+        pragma:
+          type: string
+        ifModifiedSince:
+          type: integer
+          format: int64
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    HttpMethod:
+      type: object
+    HttpRange:
+      type: object
+    HttpStatusCode:
+      type: object
+      properties:
+        error:
+          type: boolean
+        is4xxClientError:
+          type: boolean
+        is5xxServerError:
+          type: boolean
+        is1xxInformational:
+          type: boolean
+        is2xxSuccessful:
+          type: boolean
+        is3xxRedirection:
+          type: boolean
+    MediaType:
+      type: object
+      properties:
+        type:
+          type: string
+        subtype:
+          type: string
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+        qualityValue:
+          type: number
+          format: double
+        wildcardType:
+          type: boolean
+        wildcardSubtype:
+          type: boolean
+        subtypeSuffix:
+          type: string
+        concrete:
+          type: boolean
+        charset:
+          type: object
+          properties:
+            registered:
+              type: boolean
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+    ChargeWalletRequest:
+      required:
+        - amount
+        - walletId
+      type: object
+      properties:
+        walletId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+      xml:
+        name: ChargeWalletRequest
+    CreateWalletRequest:
+      required:
+        - accountId
+      type: object
+      properties:
+        accountId:
+          type: integer
+          format: int64
+      xml:
+        name: CreateWalletRequest

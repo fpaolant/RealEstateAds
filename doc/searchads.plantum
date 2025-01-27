@@ -1,0 +1,102 @@
+@startuml
+!theme mars
+
+participant C [
+=":RealEstateAds Client"
+----
+""<<Client>>""
+]
+
+
+participant GW [
+=":Gateway Service"
+----
+""<<Service>>""
+]
+
+participant SA [
+=":Search Ads Service"
+----
+""<<REST Service Prosumer>>""
+]
+
+participant AS [
+=":Ads Service"
+----
+""<<SOAP Service Provider>>""
+]
+
+participant GS [
+=":Geolocation Service"
+----
+""<<SOAP Service Provider>>""
+]
+
+database Ads as AdsDB
+
+
+
+C->GW : searchByLatLong(centerLat,centerLong,radius,[maxPrice])
+activate GW
+GW -> SA : searchByLatLong(centerLat,centerLong,radius,[maxPrice])
+activate SA
+SA -> AS : getAds()
+activate AS
+AS -> AdsDB : getAdsPublished()
+activate AdsDB
+AdsDB --> AS : published ads
+deactivate AdsDB
+AS --> SA : ads
+deactivate AS
+loop each ads
+
+
+SA -> GS : calculateDistance(centerLat,centerLong,adLat,adLong)
+activate GS
+GS --> SA : distance response
+deactivate GS
+SA->SA : filterByRadius
+end
+
+SA --> GW :adsResponse within radius
+deactivate SA
+
+GW --> C : response
+deactivate GW
+
+
+
+C->GW : searchByCity(city,radius,[maxPrice])
+activate GW
+GW -> SA : searchByCity(city,radius,[maxPrice])
+activate SA
+SA -> AS : getAds()
+activate AS
+AS -> AdsDB : getAdsPublished()
+
+activate AdsDB
+AdsDB --> AS : published ads
+deactivate AdsDB
+AS --> SA : ads
+deactivate AS
+
+SA -> GS : getLocationDetails(city)
+activate GS
+GS --> SA : Location Details Response
+deactivate GS
+
+loop each ads
+
+SA -> GS : calculateDistance(cityLat,cityLong,adLat,AdLong)
+activate GS
+GS --> SA : distance response
+SA->SA : filterByRadius
+deactivate GS
+end
+
+SA --> GW :adsResponse within radius
+deactivate SA
+
+GW --> C : response
+deactivate GW
+@enduml

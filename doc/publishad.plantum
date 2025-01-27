@@ -1,0 +1,86 @@
+@startuml
+!theme mars
+
+participant C [
+=":RealEstateAds Client"
+----
+""<<Client>>""
+]
+
+
+participant GW [
+=":Gateway Service"
+----
+""<<Service>>""
+]
+
+participant PS [
+=":Publish Service"
+----
+""<<REST Service Prosumer>>""
+]
+
+participant AS [
+=":Ads Service"
+----
+""<<SOAP Service Provider>>""
+]
+
+participant WS [
+=":Wallet Service"
+----
+""<<REST Service Provider>>""
+]
+
+database Ad as AdDB
+database Wallet as WalletDB
+
+
+
+C->GW : publishAd()
+activate GW
+GW -> PS : publishAd()
+activate PS
+
+
+PS --> WS : getWalletByAccount()
+activate WS
+WS --> WalletDB : findWalletByAccount()
+activate WalletDB
+WalletDB --> WS : Wallet
+deactivate WalletDB
+WS --> PS : Wallet
+deactivate WS
+
+PS --> PS : checkEnoughBalance()
+
+
+
+PS -> AS : createAd()
+activate AS
+AS -> AdDB : createAd()
+activate AdDB
+AdDB --> AS : Ad
+deactivate AdDB
+AS --> PS : Ad
+deactivate AS
+
+
+PS --> WS : chargeWallet()
+activate WS
+WS --> WalletDB : chargeWallet()
+activate WalletDB
+WalletDB --> WS : Wallet
+deactivate WalletDB
+WS --> PS : Wallet
+deactivate WS
+
+PS --> GW : AdResponse
+deactivate PS
+
+GW --> C : response
+
+deactivate GW
+deactivate C
+
+@enduml

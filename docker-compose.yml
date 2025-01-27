@@ -1,0 +1,178 @@
+services:
+  rea-mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    restart: always
+    volumes:
+      - rea-mysql-data:/var/lib/mysql
+      #- ./init/mysql/scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    networks:
+      - rea-network
+
+  rea-phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - "7071:80"
+    environment:
+      PMA_HOST: rea-mysql
+      PMA_PORT: 3306
+    networks:
+      - rea-network
+    depends_on:
+      - rea-mysql
+
+  rea-discovery-service:
+    build: ./discovery-service
+    image: rea-discovery-service
+    ports:
+      - "7002:7002"
+    environment:
+      SERVICE_HOSTNAME: "host.docker.internal"
+      SERVICE_PORT: "7002"
+    depends_on:
+      - rea-mysql
+    networks:
+      - rea-network
+    tty: true
+
+  rea-gateway:
+    image: rea-gateway
+    build: ./gateway
+    ports:
+      - "7100:7100"
+    environment:
+      EUREKA_SERVER_HOSTNAME: "host.docker.internal"
+      EUREKA_SERVER_PORT: "7002"
+    networks:
+      - rea-network
+    depends_on:
+      rea-discovery-service:
+        condition: service_started
+
+  rea-account-service:
+    build: ./account-service
+    image: rea-account-service
+    ports:
+      - "7110:7110"
+    environment:
+      EUREKA_SERVER_HOSTNAME: "host.docker.internal"
+      EUREKA_SERVER_PORT: "7002"
+      MYSQL_HOST: "host.docker.internal"
+    depends_on:
+      - rea-mysql
+      - rea-discovery-service
+    networks:
+      - rea-network
+    tty: true
+
+  rea-wallet-service:
+    build: ./wallet-service
+    image: rea-wallet-service
+    ports:
+      - "7160:7160"
+    environment:
+      EUREKA_SERVER_HOSTNAME: "host.docker.internal"
+      EUREKA_SERVER_PORT: "7002"
+      MYSQL_HOST: "host.docker.internal"
+    depends_on:
+      - rea-mysql
+      - rea-discovery-service
+    networks:
+      - rea-network
+    tty: true
+
+  rea-ads-service:
+    build: ./ads-service
+    image: rea-ads-service
+    ports:
+      - "7130:7130"
+    environment:
+      EUREKA_SERVER_HOSTNAME: "host.docker.internal"
+      EUREKA_SERVER_PORT: "7002"
+      MYSQL_HOST: "host.docker.internal"
+    depends_on:
+      - rea-mysql
+      - rea-discovery-service
+    networks:
+      - rea-network
+    tty: true
+
+  rea-geolocation-service:
+    build: ./geolocation-service
+    image: rea-geolocation-service
+    ports:
+      - "7120:7120"
+    environment:
+      EUREKA_SERVER_HOSTNAME: "host.docker.internal"
+      EUREKA_SERVER_PORT: "7002"
+    depends_on:
+      - rea-discovery-service
+    networks:
+      - rea-network
+    tty: true
+
+  rea-search-service:
+    build:
+        context: .
+        dockerfile: search-service/Dockerfile
+    image: rea-search-service
+    ports:
+      - "7140:7140"
+    environment:
+      EUREKA_SERVER_HOSTNAME: "host.docker.internal"
+      EUREKA_SERVER_PORT: "7002"
+    depends_on:
+      - rea-discovery-service
+      - rea-ads-service
+      - rea-geolocation-service
+    networks:
+      - rea-network
+    tty: true
+
+  rea-publish-service:
+    build:
+      context: .
+      dockerfile: publish-service/Dockerfile
+    image: rea-publish-service
+    ports:
+      - "7150:7150"
+    environment:
+      EUREKA_SERVER_HOSTNAME: "host.docker.internal"
+      EUREKA_SERVER_PORT: "7002"
+    depends_on:
+      - rea-discovery-service
+      - rea-account-service
+      - rea-ads-service
+      - rea-wallet-service
+    networks:
+      - rea-network
+    tty: true
+
+  rea-client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    image: rea-client
+    ports:
+      - "80:80"
+    networks:
+      - rea-network
+    depends_on:
+      - rea-discovery-service
+      - rea-gateway
+      - rea-account-service
+      - rea-ads-service
+      - rea-geolocation-service
+      - rea-search-service
+      - rea-publish-service
+      - rea-mysql
+
+volumes:
+  rea-mysql-data:
+
+networks:
+  rea-network:
+    driver: bridge

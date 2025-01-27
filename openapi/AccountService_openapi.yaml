@@ -1,0 +1,622 @@
+openapi: 3.0.1
+info:
+  title: Account Service System
+  description: This is Account Service. Uses Apache CXF and Spring Boot on JAX-RS.
+  contact:
+    name: System team
+  license:
+    name: Apache 2.0 License
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1-SNAPSHOT
+servers:
+  - url: http://localhost:7110/services
+paths:
+  /api/account/check-token:
+    post:
+      description: Check JWT
+      operationId: checkTokenResponse_1
+      requestBody:
+        description: Token
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TokenResponse"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/TokenResponse"
+        required: true
+      responses:
+        "200":
+          description: Check successful
+          content:
+            application/json:
+              schema:
+                type: boolean
+            application/xml:
+              schema:
+                type: boolean
+  /api/account/{accountId}/demote:
+    patch:
+      description: Demote Account to User
+      operationId: demoteAccount_1
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: User demoted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Response"
+        "404":
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/account/{id}:
+    get:
+      description: Get Account
+      operationId: getAccount_1
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Account found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+        "404":
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/account/accounts:
+    post:
+      description: Get Accounts
+      operationId: getAccounts_1
+      requestBody:
+        description: GetAccountsRequest
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetAccountsRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/GetAccountsRequest"
+        required: true
+      responses:
+        "200":
+          description: Accounts found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountPaginatedResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/AccountPaginatedResponse"
+        "404":
+          description: Accounts not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/account/login:
+    post:
+      description: Authenticate user and return JWT
+      operationId: login_1
+      requestBody:
+        description: Login
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCredentials"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/UserCredentials"
+        required: true
+      responses:
+        "200":
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "401":
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/account/admin-account:
+    post:
+      description: openAccountAdmin
+      operationId: openAccountAdmin_1
+      requestBody:
+        description: Account to be saved
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpenAccountRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/OpenAccountRequest"
+        required: true
+      responses:
+        "201":
+          description: Save Admin Account
+          headers:
+            Location:
+              description: URL of the created resource
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+        "500":
+          description: Account whit this Id not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/account/user-account:
+    post:
+      description: openAccountUser
+      operationId: openAccountUser_1
+      requestBody:
+        description: Account to be saved
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OpenAccountRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/OpenAccountRequest"
+        required: true
+      responses:
+        "201":
+          description: Save User Account
+          headers:
+            Location:
+              description: URL of the created resource
+              style: simple
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+        "500":
+          description: Account whit this Id not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/account/{accountId}/promote:
+    patch:
+      description: Promote Account to Admin
+      operationId: promoteAccount_1
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: User promoted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Response"
+        "404":
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    TokenResponse:
+      required:
+        - token
+      type: object
+      properties:
+        token:
+          type: string
+      xml:
+        name: TokenResponse
+    EntityTag:
+      type: object
+      properties:
+        value:
+          type: string
+        weak:
+          type: boolean
+    Link:
+      type: object
+      properties:
+        type:
+          type: string
+        rel:
+          type: string
+        uriBuilder:
+          $ref: "#/components/schemas/UriBuilder"
+        rels:
+          type: array
+          items:
+            type: string
+        uri:
+          type: string
+          format: uri
+        title:
+          type: string
+        params:
+          type: object
+          additionalProperties:
+            type: string
+    MediaType:
+      type: object
+      properties:
+        type:
+          type: string
+        subtype:
+          type: string
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+        wildcardType:
+          type: boolean
+        wildcardSubtype:
+          type: boolean
+    MultivaluedMapStringObject:
+      type: object
+      properties:
+        empty:
+          type: boolean
+      additionalProperties:
+        type: array
+        items:
+          type: object
+    MultivaluedMapStringString:
+      type: object
+      properties:
+        empty:
+          type: boolean
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    NewCookie:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        version:
+          type: integer
+          format: int32
+        path:
+          type: string
+        domain:
+          type: string
+        comment:
+          type: string
+        maxAge:
+          type: integer
+          format: int32
+        expiry:
+          type: string
+          format: date-time
+        secure:
+          type: boolean
+        httpOnly:
+          type: boolean
+        sameSite:
+          type: string
+          enum:
+            - NONE
+            - LAX
+            - STRICT
+    Response:
+      type: object
+      properties:
+        length:
+          type: integer
+          format: int32
+        location:
+          type: string
+          format: uri
+        language:
+          type: object
+          properties:
+            language:
+              type: string
+            displayName:
+              type: string
+            country:
+              type: string
+            variant:
+              type: string
+            script:
+              type: string
+            unicodeLocaleAttributes:
+              uniqueItems: true
+              type: array
+              items:
+                type: string
+            unicodeLocaleKeys:
+              uniqueItems: true
+              type: array
+              items:
+                type: string
+            displayLanguage:
+              type: string
+            displayScript:
+              type: string
+            displayCountry:
+              type: string
+            displayVariant:
+              type: string
+            extensionKeys:
+              uniqueItems: true
+              type: array
+              items:
+                type: string
+            iso3Language:
+              type: string
+            iso3Country:
+              type: string
+        date:
+          type: string
+          format: date-time
+        lastModified:
+          type: string
+          format: date-time
+        statusInfo:
+          $ref: "#/components/schemas/StatusType"
+        entityTag:
+          $ref: "#/components/schemas/EntityTag"
+        links:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Link"
+        stringHeaders:
+          type: object
+          properties:
+            empty:
+              type: boolean
+          additionalProperties:
+            type: array
+            items:
+              type: string
+        allowedMethods:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        cookies:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/NewCookie"
+        status:
+          type: integer
+          format: int32
+        closed:
+          type: boolean
+        mediaType:
+          $ref: "#/components/schemas/MediaType"
+        metadata:
+          type: object
+          properties:
+            empty:
+              type: boolean
+          additionalProperties:
+            type: array
+            items:
+              type: object
+        entity:
+          type: object
+        headers:
+          type: object
+          properties:
+            empty:
+              type: boolean
+          additionalProperties:
+            type: array
+            items:
+              type: object
+    StatusType:
+      type: object
+      properties:
+        family:
+          type: string
+          enum:
+            - INFORMATIONAL
+            - SUCCESSFUL
+            - REDIRECTION
+            - CLIENT_ERROR
+            - SERVER_ERROR
+            - OTHER
+        statusCode:
+          type: integer
+          format: int32
+        reasonPhrase:
+          type: string
+    UriBuilder:
+      type: object
+    ErrorResponse:
+      required:
+        - error
+      type: object
+      properties:
+        error:
+          type: string
+      xml:
+        name: ErrorResponse
+    AccountResponse:
+      required:
+        - createDate
+        - email
+        - id
+        - mobile
+        - name
+        - role
+        - surname
+        - updateDate
+        - username
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        surname:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        mobile:
+          type: string
+        role:
+          type: string
+          enum:
+            - ADMIN
+            - USER
+        updateDate:
+          type: string
+          format: date-time
+        createDate:
+          type: string
+          format: date-time
+      xml:
+        name: AccountResponse
+    AccountPaginatedResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          xml:
+            name: adResponse
+          items:
+            $ref: "#/components/schemas/AccountResponse"
+        currentPage:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        totalItems:
+          type: integer
+          format: int64
+    GetAccountsRequest:
+      required:
+        - page
+        - size
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        sortBy:
+          type: string
+        sortOrder:
+          type: string
+    UserCredentials:
+      required:
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      xml:
+        name: UserCredentials
+    OpenAccountRequest:
+      required:
+        - email
+        - mobile
+        - name
+        - password
+        - surname
+        - username
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        mobile:
+          type: string
+      xml:
+        name: OpenAccountRequest

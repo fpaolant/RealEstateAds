@@ -1,0 +1,61 @@
+<div class="card">
+    <div class="font-semibold text-xl mb-4">Pubblica un nuovo annuncio</div>
+    <p> </p>
+</div>
+
+<div class="card">
+    <div class="flex flex-col gap-6">
+        <form [formGroup]="newAdForm">
+        <img src="https://picsum.photos/380/200" [alt]="ad.title" class="block m-auto pb-4" />
+        <div>
+            <label for="title" class="block font-bold mb-3">Titolo</label>
+            <input type="text" pInputText id="title" formControlName="title" placeholder="es. Appartamento luminoso" required autofocus fluid />
+            <small class="text-red-500" *ngIf="submitted && !ad.title">Il titolo è richiesto.</small>
+        </div>
+        <div>
+            <label for="description" class="block font-bold mb-3">Descrizione</label>
+            <textarea id="description" pTextarea  formControlName="description" placeholder="es. L'appartamento è dotato di 3 camere, 2 bagni..." required rows="3" cols="20" fluid></textarea>
+        </div>
+
+        <div>
+            <label for="location" class="block font-bold mb-3">Luogo</label>
+            <input type="text" pInputText id="location" formControlName="location" placeholder="es. Roma, Pescara..." required autofocus fluid />
+            <small class="text-red-500">Il luogo è richiesto.</small>
+        </div>
+
+        <div class="mb-3">Seleziona un punto su mappa</div>
+        <rea-map 
+        mapHeight="200px"
+        (pointSelected)="onPointSelected($event)"
+        idMap="publishAdMap"
+        />
+
+        <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-6">
+                <label for="latitude" class="block font-bold mb-3">Latitudine</label>
+                <input type="text" pInputText id="latitude" formControlName="latitude" [disabled]="true" fluid />
+            </div>
+            <div class="col-span-6">
+                <label for="longitude" class="block font-bold mb-3">Longitudine</label>
+                <input type="text" pInputText id="longitude" formControlName="longitude" [disabled]="true" fluid />
+            </div>
+        </div>
+
+        <div class="grid grid-cols-12 gap-4 mb-8">
+            <div class="col-span-6">
+                <label for="price" class="block font-bold mb-3">Prezzo</label>
+                <p-inputnumber id="price" formControlName="price" mode="currency" currency="EUR" locale="it-IT" fluid />
+            </div>
+            <div class="col-span-6">
+                <label for="squareMaters" class="block font-bold mb-3">Mq</label>
+                <p-inputnumber id="squareMaters" formControlName="squareMeters" fluid />
+            </div>
+        </div>
+
+        <p-button label="Pubblica" [fluid]="false" (onClick)="publishAd()" class=""></p-button>
+
+        
+
+    </form>
+    </div>
+</div>
