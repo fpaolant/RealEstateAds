@@ -6,7 +6,6 @@ services:
     restart: always
     volumes:
       - rea-mysql-data:/var/lib/mysql
-      #- ./init/mysql/scripts:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
     networks:
