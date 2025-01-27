@@ -56,9 +56,9 @@ export class SearchAdsService {
    * @param request The search request payload.
    * @returns An observable with the search result or an error.
    */
-  searchByTitle(request: SearchByTitleRequest): Observable<Ad> {
+  searchByTitle(request: SearchByTitleRequest): Observable<Ad[]> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<Ad>(this.searchByTitleUrl, request, { headers });
+    return this.http.post<Ad[]>(this.searchByTitleUrl, request, { headers });
   }
 
   /**
@@ -66,8 +66,8 @@ export class SearchAdsService {
    * @param request The search request payload.
    * @returns An observable with the search result or an error.
    */
-  searchByLatLong(request: SearchByLatLongRequest): Observable<Ad> {
+  searchByLatLong(request: SearchByLatLongRequest): Observable<Ad[]> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<Ad>(this.searchByLatLongUrl, request, { headers });
+    return this.http.post<Ad[]>(this.searchByLatLongUrl, request, { headers });
   }
 }

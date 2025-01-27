@@ -62,7 +62,7 @@ export class AdvancedSearchPage {
       .subscribe(
         (response) => {
           // Aggiorna la lista degli annunci
-          this.ads = Array.isArray(response) ? response : [];
+          this.ads = response;
           this.adsLoading = false;
         },
         (error) => {

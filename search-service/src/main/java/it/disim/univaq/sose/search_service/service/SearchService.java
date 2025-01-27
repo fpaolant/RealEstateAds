@@ -62,10 +62,10 @@ public interface SearchService {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = ErrorResponse.class)),
+                                            schema = @Schema(type = "array", implementation = ErrorResponse.class)),
                                     @Content(
                                             mediaType = "application/xml",
-                                            schema = @Schema(implementation = ErrorResponse.class))
+                                            schema = @Schema(type = "array", implementation = ErrorResponse.class))
                             })
             }
     )
@@ -97,8 +97,8 @@ public interface SearchService {
                         responseCode = "200",
                         description = "Search performed",
                         content = {
-                                @Content(mediaType = "application/json", schema = @Schema(implementation = AdResponse.class)),
-                                @Content(mediaType = "application/xml", schema = @Schema(implementation = AdResponse.class))
+                                @Content(mediaType = "application/json", schema = @Schema(type = "array", implementation = AdResponse.class)),
+                                @Content(mediaType = "application/xml", schema = @Schema(type = "array", implementation = AdResponse.class))
                         }),
                     @ApiResponse(
                             responseCode = "400",
@@ -157,8 +157,8 @@ public interface SearchService {
                             responseCode = "200",
                             description = "Search performed",
                             content = {
-                                    @Content(mediaType = "application/json", schema = @Schema(implementation = AdResponse.class)),
-                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = AdResponse.class))
+                                    @Content(mediaType = "application/json", schema = @Schema(type = "array", implementation = AdResponse.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(type = "array", implementation = AdResponse.class))
                             }),
                     @ApiResponse(
                             responseCode = "400",

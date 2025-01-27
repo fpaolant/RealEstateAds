@@ -59,8 +59,8 @@ export class HomePage {
       page: 0,
       size: 10
     };
-    this.searchAdsService.searchByLatLong(searchRequest).subscribe(res => {
-      this.featuredAds = Array.isArray(res) ? res : [];;
+    this.searchAdsService.searchByLatLong(searchRequest).subscribe(response => {
+      this.featuredAds = response;
     });
   }
 
