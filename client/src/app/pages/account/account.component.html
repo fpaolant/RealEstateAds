@@ -1,4 +1,35 @@
 <div class="card">
-    <div class="font-semibold text-xl mb-4">Account Page</div>
-    <p>Use this page to start from scratch and place your custom content.</p>
+    <div class="font-semibold text-xl mb-8">Account Page</div>
+
+    <div class="flex flex-col gap-8">
+        <div class="flex">
+            <div class="w-20 flex-none font-medium">ID</div>
+            <div class="w-50 flex-1 text-surface-400 dark:text-surface-400">{{account?.id}}</div>
+        </div>
+        <div class="flex">
+            <div class="w-20 flex-none ">Username</div>
+            <div class="w-50 flex-1 text-surface-400 dark:text-surface-400">{{account?.username}}</div>
+        </div>
+        <div class="flex">
+            <div class="w-20 flex-none ">Nome</div>
+            <div class="w-50 flex-1 text-surface-400 dark:text-surface-400">{{account?.name}}</div>
+        </div>
+        <div class="flex">
+            <div class="w-20 flex-none ">Cognome</div>
+            <div class="w-50 flex-1 text-surface-400 dark:text-surface-400">{{account?.surname}}</div>
+        </div>
+        <div class="flex">
+            <div class="w-20 flex-none ">Email</div>
+            <div class="w-50 flex-1 text-surface-400 dark:text-surface-400">{{account?.email}}</div>
+        </div>
+        <div class="flex">
+            <div class="w-20 flex-none ">Cell.</div>
+            <div class="w-50 flex-1 text-surface-400 dark:text-surface-400">{{account?.mobile}}</div>
+        </div>
+        <div class="flex">
+            <div class="w-20 flex-none ">Ruolo</div>
+            <div class="w-50 flex-1 text-surface-400 dark:text-surface-400">{{account?.role}}</div>
+        </div>
+        
+    </div>
 </div>

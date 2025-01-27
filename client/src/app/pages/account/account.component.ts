@@ -1,20 +1,31 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { AccountService } from '../../services/account.service';
+import { AccountResponse, AccountService } from '../../services/account.service';
+import { AuthService } from '../../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'rea-account',
-  imports: [],
+  imports: [
+    CommonModule
+  ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.scss'
 })
 export class AccountPage implements OnInit {
   
   accountService = inject(AccountService);
+  authService = inject(AuthService);
 
-  //account = this.accountService.getAccount();
+  account: AccountResponse | null = null;
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    const accountId = this.authService.getUserId();
+    console.log(accountId);
+    if(accountId){
+      this.accountService.getAccount(accountId).subscribe((account) => {
+        this.account = account;
+      });
+    }
   }
 
 }

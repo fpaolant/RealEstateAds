@@ -99,16 +99,12 @@ export class AccountService {
   
 
   getAccount(id: number): Observable<AccountResponse> {
-    return this.http.get<AccountResponse>(`${this.baseUrl}/${id}`,).pipe(
-      tap({
-        next: (response: AccountResponse) => {
-          console.log('Account retrieved successfully', response);
-        },
-        error: (error: any) => {
-          console.error('Error retrieving account', error);
-        }
-      })
-    );
+    const headers = new HttpHeaders({ 
+      'Content-Type': 'application/json',
+      'Use-Auth': 'true' // tells interceptor to include bearer token
+    });
+
+    return this.http.get<AccountResponse>(`${this.baseUrl}/${id}`, { headers });
   }
 
   getAccounts(request: GetAccountsRequest): Observable<AccountsPaginatedResponse> {
