@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AdsList } from '../../components/ads-list/ads-list.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -31,8 +31,12 @@ export class HomePage {
     latitude: 42.35,
     longitude: 13.4
   }
+
   ads: Ad[] = [];
   featuredAds: Ad[] = [];
+
+  adsLoading = signal(false)
+  featuredAdsLoading = signal(false)
 
   private subscriptionSearchByTitle: Subscription = new Subscription;
   private subscriptionFeatured: Subscription = new Subscription;
@@ -59,9 +63,17 @@ export class HomePage {
       page: 0,
       size: 10
     };
-    this.searchAdsService.searchByLatLong(searchRequest).subscribe(response => {
-      this.featuredAds = response;
-    });
+    this.featuredAdsLoading.set(true);
+    this.searchAdsService.searchByLatLong(searchRequest).subscribe(
+      (response) => {
+        this.featuredAdsLoading.set(false);
+        this.featuredAds = response;
+      },
+      (error) => {
+        this.featuredAdsLoading.set(false);
+        // Handle any error that might occur
+        console.error('Error during loading featured ads:', error);
+      });
   }
 
   getLocation() {
@@ -89,13 +101,17 @@ export class HomePage {
         sortBy: 'price',
         sortOrder: 'asc'
       };
+
+      this.adsLoading.set(true);
       
       this.subscriptionSearchByTitle = this.searchAdsService.searchByTitle(request).subscribe(
         (response) => {
           // Handle the response, e.g., update a list of ads
-          this.ads = Array.isArray(response) ? response : [];
+          this.ads = response
+          this.adsLoading.set(false);
         },
         (error) => {
+          this.adsLoading.set(false);
           // Handle any error that might occur
           console.error('Error during search:', error);
         }

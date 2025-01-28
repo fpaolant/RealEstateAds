@@ -7,13 +7,13 @@
         <p-button label="Ricerca avanzata" text [routerLink]="['/pages/advanced-search']"/>
     </div>
 </div>
-
 <div class="card" [hidden]="searchText.value!==''">
-    <rea-list [ads]="featuredAds" title="Ultimi annunci inseriti" />
+    <rea-list [ads]="featuredAds" title="Ultimi annunci inseriti nella tua zona" [loading]="featuredAdsLoading()" />
 </div>
 
+
 <div class="card" [hidden]="searchText.value===''">
-    <rea-list [ads]="ads" title="Risultati della ricerca nel titolo per '{{searchText.value}}'" />
+    <rea-list [ads]="ads" title="Risultati della ricerca nel titolo per '{{searchText.value}}'" [loading]="adsLoading()" />
 </div>
 
 <hr/>
