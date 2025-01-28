@@ -6,6 +6,7 @@ import { AppLayout } from '../layout/component/app.layout';
 import { WalletPage } from './wallet/wallet.component';
 import { MyAdsPage } from './myads/myads.component';
 import { PublishAdPage } from './publish-ad/publish-ad.component';
+import { ApidocPage } from './apidoc/apidoc.component';
 
 export default [
     { path: 'advanced-search', component: AdvancedSearchPage },
@@ -13,6 +14,7 @@ export default [
     { path: 'publish-ad', component: PublishAdPage, canActivate: [authGuard] },
     { path: 'myads', component: MyAdsPage, canActivate: [authGuard] },
     { path: 'wallet', component: WalletPage, canActivate: [authGuard] },
+    { path: 'apidoc', component: ApidocPage, canActivate: [authGuard] },
 
     //{ path: 'admin', component: AdminPage, canActivate: [authGuard], data: { role: 'ADMIN' } },  
     { path: 'admin',

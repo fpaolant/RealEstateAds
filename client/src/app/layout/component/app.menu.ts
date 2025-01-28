@@ -64,8 +64,13 @@ export class AppMenu {
                 {
                     label: 'Amministratore',
                     items: [
-                        { label: 'Gestisci Account', icon: 'pi pi-fw pi-home', routerLink: ['/pages/admin/accounts'] },
+                        { label: 'Gestisci Account', icon: 'pi pi-fw pi-users', routerLink: ['/pages/admin/accounts'] },
                         { label: 'Gestisci Annunci', icon: 'pi pi-fw pi-images', routerLink: ['/pages/admin/ads'] }
+                    ]
+                },{
+                    label: 'API',
+                    items: [
+                        { label: 'API docs', icon: 'pi pi-fw pi-link', routerLink: ['/pages/apidoc'] }
                     ]
                 },
             ];
