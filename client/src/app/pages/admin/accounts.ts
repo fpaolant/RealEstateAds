@@ -68,9 +68,9 @@ export class AccountsPage implements OnInit {
 
   pager = {
     page: 0,
-    size: 1,
+    size: 5,
     f: 0,
-    r: 1
+    r: 5
   };
 
   accounts = signal<AccountResponse[]>([]);
@@ -110,7 +110,6 @@ export class AccountsPage implements OnInit {
   }
 
   onGlobalFilter(table: Table, event: Event) {
-    console.log('onGlobalFilter event:', (event.target as HTMLInputElement).value);
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
   }
 
