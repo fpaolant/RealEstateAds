@@ -75,7 +75,7 @@ spring:
               args:
                 roles:
                   - "ADMIN"
-                checkPathWithIdentifier: true
+                checkPathWithIdentifier: false
 
         - id: secure_promote_account_route
           uri: ${services.account-service-uri}
@@ -87,7 +87,7 @@ spring:
               args:
                 roles:
                   - "ADMIN"
-                checkPathWithIdentifier: true
+                checkPathWithIdentifier: false
 
         - id: secure_demote_account_route
           uri: ${services.account-service-uri}
@@ -99,7 +99,7 @@ spring:
               args:
                 roles:
                   - "ADMIN"
-                checkPathWithIdentifier: true
+                checkPathWithIdentifier: false
 
         # Wallet (unsecured)
         - id: secure_walletapi
@@ -121,7 +121,7 @@ spring:
                 roles:
                   - "ADMIN"
                   - "USER"
-                checkPathWithIdentifier: true
+                checkPathWithIdentifier: false
 
         - id: secure_wallet_accountid_route
           uri: ${services.wallet-service-uri}
@@ -147,7 +147,7 @@ spring:
                 roles:
                   - "ADMIN"
                   - "USER"
-                checkPathWithIdentifier: true
+                checkPathWithIdentifier: false
 
         - id: secure_wallet_recharge_route
           uri: ${services.wallet-service-uri}
@@ -160,9 +160,9 @@ spring:
                 roles:
                   - "ADMIN"
                   - "USER"
-                checkPathWithIdentifier: true
+                checkPathWithIdentifier: false
 
-        # Ads (secured)
+        # Ads (unsecured)
         - id: adsapi
           uri: ${services.ads-service-uri}
           predicates:
@@ -226,7 +226,7 @@ spring:
                 roles:
                   - "USER"
                   - "ADMIN"
-                checkPathWithIdentifier: true
+                checkPathWithIdentifier: false
 
         - id: publish_approve_ad_route
           uri: ${services.publish-service-uri}
@@ -238,7 +238,7 @@ spring:
               args:
                 roles:
                   - "ADMIN"
-                checkPathWithIdentifier: true
+                checkPathWithIdentifier: false
 
         - id: publish_reject_ad_route
           uri: ${services.publish-service-uri}
@@ -250,7 +250,7 @@ spring:
                 args:
                   roles:
                   - "ADMIN"
-                  checkPathWithIdentifier: true
+                  checkPathWithIdentifier: false
 
         - id: get_ads_route
           uri: ${services.publish-service-uri}
@@ -262,7 +262,7 @@ spring:
                 args:
                   roles:
                   - "ADMIN"
-                  checkPathWithIdentifier: true
+                  checkPathWithIdentifier: false
 
         - id: get_account_ads_route
           uri: ${services.publish-service-uri}
