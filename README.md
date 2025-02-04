@@ -16,6 +16,9 @@ It utilizes Apache CXF, Spring Boot, Docker, and Maven.
 - Ensure system interoperability and integration through REST and SOAP services.
 - Ensure system security and data privacy through JWT token-based authentication.
 
+## Component Diagram
+![ComponentDiagram](doc/componentDiagramREA.svg)
+
 
 ## Use Case Diagram
 
