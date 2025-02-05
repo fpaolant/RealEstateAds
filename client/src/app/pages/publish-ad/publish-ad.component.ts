@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PublishAdRequest, PublishService } from '../../services/publish.service';
 import { ButtonModule } from 'primeng/button';
@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { MapComponent } from '../../components/map/map.component';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'rea-publish-ad',
@@ -20,13 +21,14 @@ import { MessageService } from 'primeng/api';
     InputTextModule,
     InputNumberModule,
     TextareaModule,
-    MapComponent
+    MapComponent,
+    ToastModule
   ],
   templateUrl: './publish-ad.component.html',
   styleUrl: './publish-ad.component.scss',
   providers: [MessageService]
 })
-export class PublishAdPage implements OnInit {
+export class PublishAdPage {
   publishService = inject(PublishService);
   authService = inject(AuthService);
   messageService = inject(MessageService);
@@ -46,14 +48,11 @@ export class PublishAdPage implements OnInit {
     longitude: new FormControl<number|null>(0, [Validators.required]),
     accountId: new FormControl<number|null>(this.accountId, [Validators.required])
   });
-
-
-  ngOnInit() {
-    
-  }
   
 
   publishAd() {
+    this.submitted = true;
+
     this.newAdForm.disable();
     if (this.newAdForm.invalid) {
       this.newAdForm.enable();
@@ -68,22 +67,23 @@ export class PublishAdPage implements OnInit {
 
     // Inserisci accountId nel modello del form
     const adData: PublishAdRequest = this.newAdForm.getRawValue();
+
+
     
-    
-      console.log(adData);
 
     this.publishService.publishAd(adData).subscribe(
       (response) => {
         console.log(response);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Annuncio pubblicato',
-          detail: 'Il tuo annuncio è stato pubblicato con successo.'
-        });
+        this.showMessage('success', 'Il tuo annuncio è stato pubblicato con successo.', 'Annuncio pubblicato');
         this.newAdForm.reset();
         this.newAdForm.enable();
+        this.submitted = false;
       },
       (error) => {
+        this.showMessage('error', 
+          'Si è verificato un errore durante la pubblicazione del tuo annuncio. \
+          Riprova più tardi. Consultare i log del browser per maggiori dettagli.', 'Errore di pubblicazione');
+        this.newAdForm.enable();
         console.error(error);
       }
     );
@@ -95,5 +95,9 @@ export class PublishAdPage implements OnInit {
       longitude: event.lng
     });
   }
+
+  showMessage(severity: string='success', message: string='Message Content', summary: string='Success Message') {
+    this.messageService.add({ severity: severity, summary: summary, detail: message, key: 'br', life: 3000 });
+  }  
 
 }
