@@ -40,9 +40,9 @@
     </ng-template>
     <ng-template #header>
         <tr>
-            <th style="width: 3rem">
+            <!-- <th style="width: 3rem">
                 <p-tableHeaderCheckbox />
-            </th>
+            </th> -->
             <th style="width: 3rem">ID</th>
             <th pSortableColumn="username" style="min-width:rem">
                 Username
@@ -75,9 +75,9 @@
     </ng-template>
     <ng-template #body let-account>
         <tr>
-            <td style="width: 3rem">
+            <!-- <td style="width: 3rem">
                 <p-tableCheckbox [value]="account" />
-            </td>
+            </td> -->
             <td style="min-width: 3rem">{{ account.id }}</td>
             <td style="min-width: 6rem">{{ account.username }}</td>
             <td style="min-width: 8rem">{{ account.name }}</td>
