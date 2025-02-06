@@ -9,11 +9,14 @@ import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 import { AuthService } from '../../services/auth.service';
 import { DividerModule } from 'primeng/divider';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
     selector: 'rea-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator, DividerModule],
+    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator, DividerModule, ToastModule],
+    providers: [MessageService],
     template: `
         <app-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
@@ -69,6 +72,7 @@ import { DividerModule } from 'primeng/divider';
                 </div>
             </div>
         </div>
+        <p-toast position="bottom-right" key="br" />
     `
 })
 export class Login implements OnInit {
@@ -78,6 +82,7 @@ export class Login implements OnInit {
     password: string = 'admin';
 
     authService = inject(AuthService);
+    messageService = inject(MessageService);
     
     constructor(private route: ActivatedRoute, private router: Router) {}
 
@@ -96,13 +101,19 @@ export class Login implements OnInit {
         const credentials = { username: this.username, password: this.password };
         this.authService.login(credentials).subscribe(
             (response) => {
+                this.showMessage('success', 'Login effettuato con successo', 'Successo');
                 this.router.navigate([this.returnUrl]);
             },
             (error) => {
+                this.showMessage('error', 'Errore durante il login', 'Errore');
                 console.error(error);
             }
         );      
 
+    }
+
+    showMessage(severity: string='success', message: string='Message Content', summary: string='Success Message') {
+        this.messageService.add({ severity: severity, summary: summary, detail: message, key: 'br', life: 3000 });
     }
 
 }
