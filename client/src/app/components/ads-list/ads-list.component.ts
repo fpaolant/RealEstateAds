@@ -7,19 +7,23 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { TagModule } from 'primeng/tag';
 import { Ad } from '../../services/search-ads.service';
 import { SkeletonModule } from 'primeng/skeleton';
+import { AdItemListComponent } from '../ad-item-list/ad-item-list.component';
+import { AdItemGridComponent } from "../ad-item-grid/ad-item-grid.component";
 
 @Component({
     selector: 'rea-list',
     standalone: true,
     imports: [
-        CommonModule, 
-        DataViewModule, 
-        FormsModule, 
-        SelectButtonModule,
-        TagModule, 
-        ButtonModule,
-        SkeletonModule
-    ],
+    CommonModule,
+    DataViewModule,
+    FormsModule,
+    SelectButtonModule,
+    TagModule,
+    ButtonModule,
+    SkeletonModule,
+    AdItemListComponent,
+    AdItemGridComponent
+],
     templateUrl: './ads-list.component.html',
     styles: `
         .smaller-text {

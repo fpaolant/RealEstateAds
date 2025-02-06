@@ -94,6 +94,81 @@ public class PublishServiceImpl implements PublishService {
         })).start();
     }
 
+    @Override
+    public void publishAdAsync(PublishAdRequest ad, AsyncResponse asyncResponse) {
+        (new Thread(() -> {
+            log.info("Publishing ad async: {}", ad);
+            try {
+                Thread.sleep(5000);
+                // controllo se il wallet l'account esiste
+                WalletResponse wallet = getWallet(ad.getAccountId());
+                log.info("Wallet found: {}", wallet.toString());
+                // controllo se il wallet ha abbastanza soldi
+                if (wallet.getBalance().compareTo(AD_PRICE) < 0) {
+                    Response response = Response.status(Response.Status.PRECONDITION_FAILED).build();
+                    asyncResponse.resume(response);
+                    Thread.currentThread().interrupt();
+                }
+                log.info("Wallet has enough money: {}", wallet.getBalance().toString());
+                // reperisco il servizio ads
+                AdsService adsService = this.adsServiceClient.getAdsService();
+                // crea la richiesta per il servizio ads
+                CreateAd createAdRequest = getCreateAd(ad);
+                // esegui chiamata al servizio ads createAd
+                AdResponse adResponse = adsService.createAd(createAdRequest).getGetAdResponse();
+                log.info("Ad created: {}", adResponse.getId());
+                // crea la risposta
+                PublishAdAsyncResponse response = new PublishAdAsyncResponse();
+                response.setAdId(adResponse.getId());
+                response.setStatus(AdStatus.PENDING_APPROVAL);
+
+                // addebito il wallet
+                log.info("Charging wallet id {}: {}", wallet.getWalletId(), AD_PRICE.toString());
+                chargeWallet(wallet.getWalletId(), AD_PRICE);
+                log.info("Wallet charged: {}", AD_PRICE.toString());
+
+                // invia la risposta
+                asyncResponse.resume(response);
+            } catch (ServiceUnavailableException e) {
+                Response response = Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+                asyncResponse.resume(response);
+                Thread.currentThread().interrupt();
+            } catch (WalletNotFoundException e) {
+                Response response = Response.status(Response.Status.NOT_FOUND).build();
+                asyncResponse.resume(response);
+                Thread.currentThread().interrupt();
+            } catch (InterruptedException e) {
+                Response response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+                asyncResponse.resume(response);
+                Thread.currentThread().interrupt();
+            }
+        })).start();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Response getAdStatus(Long adId) {
+        // reperisco il servizio ads
+        try {
+            AdsService adsService = this.adsServiceClient.getAdsService();
+            // crea la richiesta per il servizio ads
+            GetAdDetails getAdRequest = new GetAdDetails();
+            getAdRequest.setId(adId);
+            GetAdDetailsResponse adDetails = adsService.getAdDetails(getAdRequest);
+            PublishAdStatusResponse response = new PublishAdStatusResponse();
+            response.setStatus(adDetails.getGetAdDetailsResponse().getStatus());
+            return Response.ok(response).build();
+        } catch (ServiceUnavailableException e) {
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+        } catch (NotFoundException_Exception e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (AdException_Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     /**
      * {@inheritDoc}
      */

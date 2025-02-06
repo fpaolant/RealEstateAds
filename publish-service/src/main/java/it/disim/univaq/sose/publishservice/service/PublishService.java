@@ -9,6 +9,7 @@ import it.disim.univaq.sose.publishservice.domain.dto.*;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.container.Suspended;
+import jakarta.ws.rs.core.Response;
 
 
 /**
@@ -79,6 +80,58 @@ public interface PublishService {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = PublishAdRequest.class)),
                     @Content(mediaType = "application/xml", schema = @Schema(implementation = PublishAdRequest.class))}
     ) PublishAdRequest ad, @Suspended AsyncResponse asyncResponse);
+
+    /**
+     * Get ad status.
+     *
+     * @param adId the ad ID
+     * @return the response
+     */
+    @Operation(
+            operationId = "getAdStatus",
+            description = "Get ad status.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Ad status retrieved successfully",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = PublishAdStatusResponse.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = PublishAdStatusResponse.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = ErrorResponse.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "415",
+                            description = "Bad Request",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = ErrorResponse.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "503",
+                            description = "Service Unavailable",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = ErrorResponse.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = ErrorResponse.class))
+                            })
+            }
+    )
+    @GET
+    @Path("/ad/{adId}/status")
+    @Produces({"application/json", "application/xml"})
+    Response getAdStatus(@PathParam("adId") Long adId);
 
 
     /**

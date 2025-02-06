@@ -228,6 +228,18 @@ spring:
                   - "ADMIN"
                 checkPathWithIdentifier: false
 
+        - id: publish_ad_status_route
+          uri: ${services.publish-service-uri}
+          predicates:
+            - Path=/api/publish/ad/{adId}/status
+          filters:
+            - RewritePath=/api/publish/ad/(?<segment>.*)/status , /services/api/publish/ad/${segment}/status
+            - name: AuthorizationFilter
+              args:
+                roles:
+                  - "ADMIN"
+                checkPathWithIdentifier: false
+
         - id: publish_approve_ad_route
           uri: ${services.publish-service-uri}
           predicates:
