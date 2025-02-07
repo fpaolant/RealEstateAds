@@ -10,6 +10,12 @@ services:
       - "3306:3306"
     networks:
       - rea-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
 
   rea-phpmyadmin:
     image: phpmyadmin:latest
@@ -21,7 +27,8 @@ services:
     networks:
       - rea-network
     depends_on:
-      - rea-mysql
+      rea-mysql:
+        condition: service_healthy
 
   rea-discovery-service:
     build: ./discovery-service
@@ -32,10 +39,16 @@ services:
       SERVICE_HOSTNAME: "host.docker.internal"
       SERVICE_PORT: "7002"
     depends_on:
-      - rea-mysql
+      rea-mysql:
+        condition: service_healthy
     networks:
       - rea-network
     tty: true
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7002/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   rea-gateway:
     image: rea-gateway
@@ -60,9 +73,17 @@ services:
       EUREKA_SERVER_HOSTNAME: "host.docker.internal"
       EUREKA_SERVER_PORT: "7002"
       MYSQL_HOST: "host.docker.internal"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7110/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
     depends_on:
-      - rea-mysql
-      - rea-discovery-service
+      rea-mysql:
+        condition: service_healthy
+      rea-discovery-service:
+        condition: service_healthy
     networks:
       - rea-network
     tty: true
@@ -76,9 +97,17 @@ services:
       EUREKA_SERVER_HOSTNAME: "host.docker.internal"
       EUREKA_SERVER_PORT: "7002"
       MYSQL_HOST: "host.docker.internal"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7160/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
     depends_on:
-      - rea-mysql
-      - rea-discovery-service
+      rea-mysql:
+        condition: service_healthy
+      rea-discovery-service:
+        condition: service_healthy
     networks:
       - rea-network
     tty: true
@@ -92,9 +121,17 @@ services:
       EUREKA_SERVER_HOSTNAME: "host.docker.internal"
       EUREKA_SERVER_PORT: "7002"
       MYSQL_HOST: "host.docker.internal"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7130/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
     depends_on:
-      - rea-mysql
-      - rea-discovery-service
+      rea-mysql:
+        condition: service_healthy
+      rea-discovery-service:
+        condition: service_healthy
     networks:
       - rea-network
     tty: true
@@ -107,8 +144,15 @@ services:
     environment:
       EUREKA_SERVER_HOSTNAME: "host.docker.internal"
       EUREKA_SERVER_PORT: "7002"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7120/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
     depends_on:
-      - rea-discovery-service
+      rea-discovery-service:
+        condition: service_healthy
     networks:
       - rea-network
     tty: true
@@ -124,9 +168,12 @@ services:
       EUREKA_SERVER_HOSTNAME: "host.docker.internal"
       EUREKA_SERVER_PORT: "7002"
     depends_on:
-      - rea-discovery-service
-      - rea-ads-service
-      - rea-geolocation-service
+      rea-discovery-service:
+        condition: service_healthy
+      rea-ads-service:
+        condition: service_healthy
+      rea-geolocation-service:
+        condition: service_healthy
     networks:
       - rea-network
     tty: true
@@ -142,10 +189,14 @@ services:
       EUREKA_SERVER_HOSTNAME: "host.docker.internal"
       EUREKA_SERVER_PORT: "7002"
     depends_on:
-      - rea-discovery-service
-      - rea-account-service
-      - rea-ads-service
-      - rea-wallet-service
+      rea-discovery-service:
+        condition: service_healthy
+      rea-account-service:
+        condition: service_healthy
+      rea-ads-service:
+        condition: service_healthy
+      rea-wallet-service:
+        condition: service_healthy
     networks:
       - rea-network
     tty: true

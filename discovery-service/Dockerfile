@@ -18,6 +18,9 @@ FROM amazoncorretto:17.0.12-alpine3.19
 # Set the working directory
 WORKDIR /app
 
+# Installa curl
+RUN apk add --no-cache curl
+
 # Copy the jar from build stage
 COPY --from=build /app/target/*.jar app.jar
 
