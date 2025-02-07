@@ -50,21 +50,4 @@ export class AdsList {
     @Input() gridSelect: boolean = true;
     @Input() loading: boolean = false;
 
-
-
-    getStatus(ad: Ad) {
-        switch (ad.status) {
-            case 'PUBLISHED':
-                return 'success';
-
-            case 'PENDING_APPROVAL':
-                return 'warn';
-
-            case 'REJECTED':
-                return 'danger';
-
-            default:
-                return 'info';
-        }
-    }
 }
