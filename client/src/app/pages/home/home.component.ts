@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { AdsList } from '../../components/ads-list/ads-list.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -6,19 +6,22 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { Ad, SearchAdsService, SearchByLatLongRequest, SearchByTitleRequest } from '../../services/search-ads.service';
 import { debounceTime, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'rea-home',
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule,
     ReactiveFormsModule,
     AdsList,
     InputTextModule,
     ButtonModule,
     InputGroupModule,
+    SelectModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -34,6 +37,14 @@ export class HomePage {
 
   ads: Ad[] = [];
   featuredAds: Ad[] = [];
+  radius = signal(100);
+  radiusOptions = [
+    { name: '50 km', value: 50 },
+    { name: '100 km', value: 100 },
+    { name: '150 km', value: 150 },
+    { name: '200 km', value: 200 },
+    { name: '1000 km', value: 1000 }
+  ];
 
   adsLoading = signal(false)
   featuredAdsLoading = signal(false)
@@ -41,6 +52,12 @@ export class HomePage {
   private subscriptionSearchByTitle: Subscription = new Subscription;
   private subscriptionFeatured: Subscription = new Subscription;
 
+  constructor() {
+    // 🔹 Usa un effect() per monitorare radius e ricaricare gli annunci
+    effect(() => {
+      this.loadFeaturedAds();
+    });
+  }
   
   ngOnInit() {
     // Ascolta i cambiamenti del controllo con debounceTime
@@ -56,7 +73,7 @@ export class HomePage {
     const searchRequest: SearchByLatLongRequest = {
       latitude: this.position.latitude,
       longitude: this.position.longitude,
-      radius: 100,
+      radius: this.radius(),
       status: 'PUBLISHED',
       sortBy: 'createdAt',
       sortOrder: 'desc',
@@ -128,6 +145,14 @@ export class HomePage {
       this.subscriptionFeatured.unsubscribe();
     }
 
+  }
+
+  get selectedRadius(): number {
+    return this.radius();
+  }
+  
+  set selectedRadius(value: number) {
+    this.radius.set(value);
   }
   
 }

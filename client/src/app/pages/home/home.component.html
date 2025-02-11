@@ -8,7 +8,9 @@
     </div>
 </div>
 <div class="card" [hidden]="searchText.value!==''">
-    <rea-list [ads]="featuredAds" title="Ultimi annunci inseriti nella tua zona" [loading]="featuredAdsLoading()" />
+    <div class="font-semibold text-xl mb-8">Ultimi annunci inseriti nella tua zona</div>
+    A &nbsp; <p-select [options]="radiusOptions" [(ngModel)]="selectedRadius" optionLabel="name" optionValue="value"  (ngModelChange)="radius.set($event)" placeholder="Change Radius" class="w-full md:w-56 mb-4" />&nbsp; dalla tua posizione ({{position.latitude}}, {{position.longitude}})
+    <rea-list [ads]="featuredAds" [loading]="featuredAdsLoading()" />
 </div>
 
 

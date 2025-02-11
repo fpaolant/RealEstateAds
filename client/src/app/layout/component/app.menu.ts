@@ -46,7 +46,7 @@ export class AppMenu {
             {
                 items: [
                     { label: 'Home', icon: 'pi pi-fw pi-home', routerLink: ['/'] },
-                    { label: 'Ricerca per mappa', icon: 'pi pi-fw pi-search', routerLink: ['/pages/advanced-search'] },
+                    { label: 'Ricerca su mappa', icon: 'pi pi-fw pi-search', routerLink: ['/pages/advanced-search'] },
                 ]
             },
         ];
