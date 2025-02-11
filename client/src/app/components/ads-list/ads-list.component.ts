@@ -46,6 +46,7 @@ export class AdsList {
 
     @Input() ads: Ad[] = [];
     @Input() showStatus: boolean = false;
+    @Input() showId: boolean = false;
     @Input() title: string = '';
     @Input() gridSelect: boolean = true;
     @Input() loading: boolean = false;

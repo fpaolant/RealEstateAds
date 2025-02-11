@@ -18,6 +18,7 @@ export class AdItemListComponent implements OnInit, OnDestroy {
 
   @Input() item: Ad = {} as Ad;
   @Input() showStatus: boolean = false;
+  @Input() showId: boolean = false;
   @Input() itemIndex: number = 0;
 
   status: string = 'WAITING';

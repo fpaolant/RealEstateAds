@@ -45,12 +45,12 @@ export class Signup implements OnInit {
 
   submitted = false;
   signupForm = new FormGroup({
-    name: new FormControl<string>('fabio', [Validators.required, Validators.nullValidator]),
-    surname: new FormControl<string>('paol', [Validators.required, Validators.nullValidator]),
-    username: new FormControl<string>('admin', [Validators.required, Validators.nullValidator]),
-    password: new FormControl<string>('admin', [Validators.required, Validators.nullValidator]),
-    email: new FormControl<string>('fabio@realestateads.it', [Validators.required, Validators.email, Validators.nullValidator]),
-    mobile: new FormControl<string>('3316667023', [Validators.required, Validators.nullValidator]),
+    name: new FormControl<string>('', [Validators.required, Validators.nullValidator]),
+    surname: new FormControl<string>('', [Validators.required, Validators.nullValidator]),
+    username: new FormControl<string>('', [Validators.required, Validators.nullValidator]),
+    password: new FormControl<string>('', [Validators.required, Validators.nullValidator]),
+    email: new FormControl<string>('info@realestateads.it', [Validators.required, Validators.email, Validators.nullValidator]),
+    mobile: new FormControl<string>('331234567', [Validators.required, Validators.nullValidator]),
   });
 
 

@@ -17,6 +17,7 @@ export class AdItemGridComponent implements OnInit, OnDestroy{
 
   @Input() item: Ad = {} as Ad;
   @Input() showStatus: boolean = false;
+  @Input() showId: boolean = false;
 
   status: string = 'WAITING';
 
