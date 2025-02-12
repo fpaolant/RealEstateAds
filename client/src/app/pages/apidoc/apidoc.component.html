@@ -41,7 +41,7 @@
           </div>
         </div>
         <div
-          class="flex items-center justify-center bg-blue-100 dark:bg-orange-400/10 rounded-border"
+          class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border"
           style="width: 6rem; height: 2.5rem"
         >
           <i class="pi pi-globe text-grey-500 !text-xl"> REST</i>
@@ -121,7 +121,7 @@
           </div>
         </div>
         <div
-          class="flex items-center justify-center bg-blue-100 dark:bg-orange-400/10 rounded-border"
+          class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border"
           style="width: 6rem; height: 2.5rem"
         >
           <i class="pi pi-globe text-grey-500 !text-xl"> REST</i>
@@ -201,7 +201,7 @@
           </div>
         </div>
         <div
-          class="flex items-center justify-center bg-blue-100 dark:bg-orange-400/10 rounded-border"
+          class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border"
           style="width: 6rem; height: 2.5rem"
         >
           <i class="pi pi-globe text-grey-500 !text-xl"> REST</i>
@@ -248,7 +248,7 @@
           </div>
         </div>
         <div
-          class="flex items-center justify-center bg-blue-100 dark:bg-orange-400/10 rounded-border"
+          class="flex items-center justify-center bg-blue-100 dark:bg-blue-400/10 rounded-border"
           style="width: 6rem; height: 2.5rem"
         >
           <i class="pi pi-globe text-grey-500 !text-xl"> REST</i>
@@ -256,4 +256,82 @@
       </div>
     </div>
   </div>
+
+  
+</div>
+
+<div class="card">
+  <div class="font-semibold text-xl mb-8">Other Resources</div>
+</div>
+
+
+<div class="grid grid-cols-12 gap-8 mb-8">
+
+  <div class="col-span-6 lg:col-span-6 xl:col-span-6">
+  <div class="card mb-0">
+    <div class="flex justify-between mb-4">
+      <div>
+        <span class="block text-muted-color font-medium mb-4"
+          >PHPMyAdmin</span
+        >
+        <div
+          class="text-surface-900 dark:text-surface-0 font-medium text-xl"
+        ></div>
+        <div class="flex">
+          <div class="w-20 flex-none">
+            <p-button
+              label="dashboard"
+              severity="success"
+              text
+              (onClick)="
+                openWS('http://localhost:7071')
+              "
+            />
+          </div>
+        </div>
+        
+      </div>
+      <div
+        class="flex items-center justify-center bg-green-100 dark:bg-green-400/10 rounded-border"
+        style="width: 6rem; height: 2.5rem"
+      >
+        <i class="pi pi-database text-grey-500 !text-xl"> DB</i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-span-6 lg:col-span-6 xl:col-span-6">
+  <div class="card mb-0">
+    <div class="flex justify-between mb-4">
+      <div>
+        <span class="block text-muted-color font-medium mb-4"
+          >Eureka</span
+        >
+        <div
+          class="text-surface-900 dark:text-surface-0 font-medium text-xl"
+        ></div>
+        <div class="flex">
+          <div class="w-20 flex-none">
+            <p-button
+              label="dashboard"
+              severity="success"
+              text
+              (onClick)="
+                openWS('http://localhost:7002')
+              "
+            />
+          </div>
+        </div>
+        
+      </div>
+      <div
+        class="flex items-center justify-center bg-green-100 dark:bg-green-400/10 rounded-border"
+        style="width: 6rem; height: 2.5rem"
+      >
+        <i class="pi pi-search text-grey-500 !text-xl"> LB</i>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
