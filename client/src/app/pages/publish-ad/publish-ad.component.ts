@@ -10,6 +10,7 @@ import { MapComponent } from '../../components/map/map.component';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'rea-publish-ad',
@@ -25,13 +26,13 @@ import { ToastModule } from 'primeng/toast';
     ToastModule
   ],
   templateUrl: './publish-ad.component.html',
-  styleUrl: './publish-ad.component.scss',
   providers: [MessageService]
 })
 export class PublishAdPage {
   publishService = inject(PublishService);
   authService = inject(AuthService);
   messageService = inject(MessageService);
+  router = inject(Router);
   accountId: number | null = this.authService.getUserId();
 
   ad: PublishAdRequest = {} as PublishAdRequest;
@@ -68,16 +69,17 @@ export class PublishAdPage {
     // Inserisci accountId nel modello del form
     const adData: PublishAdRequest = this.newAdForm.getRawValue();
 
-
-    
-
     this.publishService.publishAd(adData).subscribe(
       (response) => {
-        console.log(response);
-        this.showMessage('success', 'Il tuo annuncio è stato pubblicato con successo.', 'Annuncio pubblicato');
-        this.newAdForm.reset();
-        this.newAdForm.enable();
-        this.submitted = false;
+        this.showMessage('success', 'Il tuo annuncio è stato pubblicato con successo. Verrai rinderizzato alla pagina dei tuoi annunci', 'Annuncio preso in carico');
+
+        setTimeout(() => {
+          this.newAdForm.reset();
+          this.newAdForm.enable();
+          this.submitted = false;
+          this.router.navigate(['pages/myads']);
+        } , 3000);
+        
       },
       (error) => {
         this.showMessage('error', 
