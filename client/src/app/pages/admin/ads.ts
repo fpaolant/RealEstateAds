@@ -211,6 +211,10 @@ export class AdsPage implements OnInit {
     this.submitted = false;
   }
 
+  hideApproveDialog() {
+    this.publishDialog = false;
+  }
+
   saveAd() {
   }
 

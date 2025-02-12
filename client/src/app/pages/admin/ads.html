@@ -91,28 +91,28 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="adDialog" [style]="{ width: '450px' }" header="Ad Details" [modal]="true">
+<p-dialog [(visible)]="adDialog" [style]="{ width: '450px' }" header="Dettagli annuncio" [modal]="true">
     <ng-template #content>
         <div class="flex flex-col gap-6">
             <img src="https://picsum.photos/380/200" [alt]="ad.title" class="block m-auto pb-4" />
             <div>
-                <label for="title" class="block font-bold mb-3">Title</label>
+                <label for="title" class="block font-bold mb-3">Titolo</label>
                 <input type="text" pInputText id="title" [(ngModel)]="ad.title" [disabled]="true" required autofocus fluid />
-                <small class="text-red-500" *ngIf="submitted && !ad.title">Title is required.</small>
+                <small class="text-red-500" *ngIf="submitted && !ad.title">Il titolo è richiesto.</small>
             </div>
             <div>
-                <label for="description" class="block font-bold mb-3">Description</label>
+                <label for="description" class="block font-bold mb-3">Descrizione</label>
                 <textarea id="description" pTextarea [(ngModel)]="ad.description" required rows="3" cols="20" [disabled]="true" fluid></textarea>
             </div>
 
             <div>
-                <label for="status" class="block font-bold mb-3">Status</label>
+                <label for="status" class="block font-bold mb-3">Stato</label>
                 <p-select [(ngModel)]="ad.status" inputId="status" [options]="statuses" optionLabel="label" optionValue="label" placeholder="Select a Status" [disabled]="true" fluid />
             </div>
 
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
-                    <label for="price" class="block font-bold mb-3">Price</label>
+                    <label for="price" class="block font-bold mb-3">Prezzo</label>
                     <p-inputnumber id="price" [(ngModel)]="ad.price" mode="currency" currency="EUR" locale="it-IT" [disabled]="true" fluid />
                 </div>
                 <div class="col-span-6">
@@ -129,28 +129,28 @@
     </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="publishDialog" [style]="{ width: '450px' }" header="Ad reject" [modal]="true">
+<p-dialog [(visible)]="publishDialog" [style]="{ width: '450px' }" [header]="(publishDialogAction==='approve')? 'Approva annuncio':'Rifiuta annuncio'" [modal]="true">
     <ng-template #content>
         <div class="flex flex-col gap-6">
             <img src="https://picsum.photos/380/200" [alt]="ad.title" class="block m-auto pb-4" />
             <div>
-                <label for="title" class="block font-bold mb-3">Title</label>
+                <label for="title" class="block font-bold mb-3">Titolo</label>
                 <input type="text" pInputText id="title" [(ngModel)]="ad.title" [disabled]="true" required autofocus fluid />
                 <small class="text-red-500" *ngIf="submitted && !ad.title">Title is required.</small>
             </div>
             <div>
-                <label for="description" class="block font-bold mb-3">Description</label>
+                <label for="description" class="block font-bold mb-3">Descrizione</label>
                 <textarea id="description" pTextarea [(ngModel)]="ad.description" required rows="3" cols="20" [disabled]="true" fluid></textarea>
             </div>
 
             <div>
-                <label for="status" class="block font-bold mb-3">Status</label>
+                <label for="status" class="block font-bold mb-3">Stato</label>
                 <p-select [(ngModel)]="ad.status" inputId="status" [options]="statuses" optionLabel="label" optionValue="label" placeholder="Select a Status" [disabled]="true" fluid />
             </div>
 
             <div class="grid grid-cols-12 gap-4">
                 <div class="col-span-6">
-                    <label for="price" class="block font-bold mb-3">Price</label>
+                    <label for="price" class="block font-bold mb-3">Prezzo</label>
                     <p-inputnumber id="price" [(ngModel)]="ad.price" mode="currency" currency="EUR" locale="it-IT" [disabled]="true" fluid />
                 </div>
                 <div class="col-span-6">
@@ -169,7 +169,7 @@
     </ng-template>
 
     <ng-template #footer>
-        <p-button label="Chiudi" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Chiudi" icon="pi pi-times" text (click)="hideApproveDialog()" />
         <p-button *ngIf="publishDialogAction==='reject'" label="Rifiuta" severity="danger" icon="pi pi-check" (click)="rejectAd(ad)" />
         <p-button *ngIf="publishDialogAction==='approve'" label="Approva e Pubblica" severity="success" icon="pi pi-check" (click)="approveAd(ad)" />
     </ng-template>
