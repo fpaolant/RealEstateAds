@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, AfterViewInit, Output, EventEmitter, OnChanges, Input, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, Output, EventEmitter, OnChanges, Input, SimpleChanges, OnDestroy, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import * as L from 'leaflet';
+
+// Correggi il percorso delle icone predefinite
+(L.Icon.Default as any).prototype.options.iconUrl = '../leaflet/marker-icon.png';
+(L.Icon.Default as any).prototype.options.shadowUrl = '../leaflet/marker-shadow.png';
 
 @Component({
   selector: 'rea-map',
@@ -9,14 +14,16 @@ import * as L from 'leaflet';
   ],
   template: `
     <div [id]="idMap" [ngStyle]="{'height': mapHeight, 'width': mapWidth}"></div>
-  `,
-  styleUrls: ['./map.component.scss']
+  `
 })
 export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
   private map: L.Map | undefined;
   private circle: L.Circle | undefined;
 
   private labelMarker: L.Marker | undefined;
+  private markers: L.Marker[] = []; // Array per tracciare i marker
+
+  router = inject(Router);
 
 
   @Input() idMap: string = 'map'; // Default: id map
@@ -28,6 +35,7 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() mapWidth: string = '100%';   // Default: larghezza 100%
   @Input() mapCenter: L.LatLngExpression = [42.35, 13.4]; // Coordinate di partenza (Abruzzo)
 
+  @Input() points: {lat: number; lng: number; opts?: any }[] = [];
 
 
   // Evento per comunicare le coordinate selezionate al componente genitore
@@ -37,8 +45,6 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
 
   ngAfterViewInit(): void {
-    
-
     // Inizializza la mappa
     this.map = L.map(this.idMap).setView(this.mapCenter, 13); // Coordinate di partenza (Abruzzo)
 
@@ -50,6 +56,8 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
     // Disegna il cerchio iniziale
     this.drawCircle();
 
+    // Aggiungi i punti sulla mappa
+    this.addPoints(this.points);
 
     // Gestisci il click sulla mappa
     this.map.on('click', (event: any) => {
@@ -58,9 +66,6 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
       // Emetti le coordinate al componente genitore
       this.pointSelected.emit({ lat, lng });
-
-      // Aggiungi un marker sulla mappa
-      //L.marker([lat, lng]).addTo(this.map).bindPopup(`Lat: ${lat}, Lng: ${lng}`).openPopup();
     });
 
     // Gestisci il cambio di posizione del centro mappa
@@ -80,6 +85,11 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
       // Aggiorna il cerchio quando il raggio cambia
       this.drawCircle();
     }
+    if (this.map && changes['points'] 
+      && changes['points'].currentValue.length > 0
+      && changes['points'].currentValue.length !== changes['points'].previousValue.length) {
+      this.addPoints(this.points);
+    }
   }
 
   ngOnDestroy(): void {
@@ -93,7 +103,6 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
     if (!this.map || !this.radius || this.radius<0) return;
 
     const center = this.map.getCenter();
-
     // Rimuovi il cerchio precedente, se esistente
     if (this.circle) {
       this.circle.remove();
@@ -150,12 +159,30 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
     );
   }
 
-  // Metodo per aggiungere punti sulla mappa
-  addPoints(points: { lat: number; lng: number }[]): void {
+  addPoints(points: {lat: number; lng: number, opts?: any }[]): void {
     if (this.map) {
+      // Rimuove tutti i marker precedenti
+      this.clearMarkers();
+      // Aggiunge i nuovi marker alla mappa e li memorizza
       points.forEach(point => {
-       // L.marker([point.lat, point.lng]).addTo(this.map);
+        const marker = L.marker([point.lat, point.lng]).addTo(this.map!);
+        if (point.opts) {
+          (point.opts.title) ? marker.bindPopup(point.opts.title): null;
+          (point.opts.icon) ? marker.setIcon(point.opts.icon): null;
+          if(point.opts.route) {
+            marker.on('click', () => {
+              this.router.navigate([point.opts.route]);
+            });
+          }
+        }
+        this.markers.push(marker); // Memorizza il marker nell'array
       });
     }
+  }
+  
+  // Metodo per rimuovere tutti i marker dalla mappa
+  clearMarkers(): void {
+    this.markers.forEach(marker => this.map!.removeLayer(marker)); 
+    this.markers = []; // Svuota l'array dei marker
   }
 }

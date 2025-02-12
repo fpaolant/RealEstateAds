@@ -48,6 +48,7 @@ export interface ErrorResponse {
 export class SearchAdsService {
   private readonly searchByTitleUrl = '/api/search/searchByTitle';
   private readonly searchByLatLongUrl = '/api/search/searchByLatLong';
+  private readonly baseUrl = '/api/search';
 
   constructor(private http: HttpClient) {}
 
@@ -57,8 +58,9 @@ export class SearchAdsService {
    * @returns An observable with the search result or an error.
    */
   searchByTitle(request: SearchByTitleRequest): Observable<Ad[]> {
+    const url = `${this.baseUrl}/searchByTitle`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<Ad[]>(this.searchByTitleUrl, request, { headers });
+    return this.http.post<Ad[]>(url, request, { headers });
   }
 
   /**
@@ -67,7 +69,19 @@ export class SearchAdsService {
    * @returns An observable with the search result or an error.
    */
   searchByLatLong(request: SearchByLatLongRequest): Observable<Ad[]> {
+    const url = `${this.baseUrl}/searchByLatLong`;
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<Ad[]>(this.searchByLatLongUrl, request, { headers });
+    return this.http.post<Ad[]>(url, request, { headers });
+  }
+
+  /**
+   * Search an ad by ID.
+   * @param id The ID of the ad to search.
+   * @returns An observable with the ad or an error.
+   */
+  searchById(id: number): Observable<Ad> {
+    const url = `${this.baseUrl}/searchById/${id}`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<Ad>(url, { headers });
   }
 }

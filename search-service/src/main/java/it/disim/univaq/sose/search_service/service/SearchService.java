@@ -6,12 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.disim.univaq.sose.search_service.domain.dto.*;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.container.AsyncResponse;
 import jakarta.ws.rs.container.Suspended;
+import jakarta.ws.rs.core.Response;
 
 /**
  * The SearchService interface provides methods to search for a city or a location by latitude and longitude.
@@ -197,5 +195,52 @@ public interface SearchService {
             ) SearchByLatLongRequest paramSearchByLatLongRequest,
             @Suspended AsyncResponse paramAsyncResponse
     );
+
+    /**
+     * Search ads by specifying the id
+     * @param id The id of the ad
+     * @return The response to the search by id
+     */
+    @Operation(
+            operationId = "searchById",
+            description = "Search ads by specifying the id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Search performed",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = Response.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = Response.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Ad with id Not Found",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = ErrorResponse.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "503",
+                            description = "Service Unavailable",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)),
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = ErrorResponse.class))
+                            })
+            }
+    )
+
+    @GET
+    @Path("/searchById/{id}")
+    @Consumes({"application/json", "application/xml"})
+    @Produces({"application/json", "application/xml"})
+    Response searchById(@PathParam("id") Long id);
+
 
 }

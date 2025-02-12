@@ -89,4 +89,13 @@ export class AdvancedSearchPage {
     }
   }
 
+  // Getter per trasformare gli annunci in coordinate
+  get adsPoints() {
+    return this.ads.map(ad => ({
+      opts: {route: '/pages/ad/' + ad.id!},
+      lat: ad.latitude!,
+      lng: ad.longitude!
+    }));
+  }
+
 }

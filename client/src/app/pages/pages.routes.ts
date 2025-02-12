@@ -7,12 +7,14 @@ import { WalletPage } from './wallet/wallet.component';
 import { MyAdsPage } from './myads/myads.component';
 import { PublishAdPage } from './publish-ad/publish-ad.component';
 import { ApidocPage } from './apidoc/apidoc.component';
+import { AdDetailsPage } from './ad/ad-details/ad-details.component';
 
 export default [
     { path: 'advanced-search', component: AdvancedSearchPage },
     { path: 'account', component: AccountPage, canActivate: [authGuard] },
     { path: 'publish-ad', component: PublishAdPage, canActivate: [authGuard] },
     { path: 'myads', component: MyAdsPage, canActivate: [authGuard] },
+    { path: 'ad/:id', component: AdDetailsPage },
     { path: 'wallet', component: WalletPage, canActivate: [authGuard] },
     { path: 'apidoc', component: ApidocPage, canActivate: [authGuard] },
 

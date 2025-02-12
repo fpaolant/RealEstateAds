@@ -4,10 +4,12 @@ import { TagModule } from 'primeng/tag';
 import { Ad } from '../../services/search-ads.service';
 import { Subscription } from 'rxjs';
 import { PublishService } from '../../services/publish.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'rea-ad-item-grid',
   imports: [
+    RouterModule,
     CommonModule,
     TagModule,
   ],
@@ -18,6 +20,7 @@ export class AdItemGridComponent implements OnInit, OnDestroy{
   @Input() item: Ad = {} as Ad;
   @Input() showStatus: boolean = false;
   @Input() showId: boolean = false;
+  @Input() detailRoute: string = '';
 
   status: string = 'WAITING';
 

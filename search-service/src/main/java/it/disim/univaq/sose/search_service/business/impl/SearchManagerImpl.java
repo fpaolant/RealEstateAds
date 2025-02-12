@@ -36,6 +36,9 @@ public class SearchManagerImpl implements SearchManager {
         this.geolocationServiceClient = geolocationServiceClient;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void searchByTitle(SearchByTitleRequest searchByTitleRequest, AsyncResponse asyncResponse) {
         (new Thread(() -> {
@@ -72,6 +75,9 @@ public class SearchManagerImpl implements SearchManager {
         return adsResponse;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void searchByCity(SearchByCityRequest searchByCityRequest, AsyncResponse asyncResponse) {
         (new Thread(() -> {
             log.info("Searching ads by city, req in: {}", searchByCityRequest.toString());
@@ -127,6 +133,9 @@ public class SearchManagerImpl implements SearchManager {
         })).start();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void searchByLatLong(SearchByLatLongRequest searchByLatLongRequest, AsyncResponse asyncResponse) {
         (new Thread(() -> {
             try {
@@ -158,6 +167,27 @@ public class SearchManagerImpl implements SearchManager {
                 asyncResponse.resume(response);
             }
         })).start();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Response searchById(Long id) {
+        log.info("Searching ad by id: {}", id);
+        try {
+            AdsService adsService = this.adsServiceClient.getAdsService();
+            GetAdDetails getAdDetailsRequest = new GetAdDetails();
+            getAdDetailsRequest.setId(id);
+            GetAdDetailsResponse  adDetailsResponse  = adsService.getAdDetails(getAdDetailsRequest);
+            return Response.status(Response.Status.OK).entity(adDetailsResponse.getGetAdDetailsResponse()).build();
+        } catch (ServiceUnavailableException e) {
+            return Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
+        } catch (NotFoundException_Exception e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(new ErrorResponse(e.getMessage())).build();
+        } catch (AdException_Exception e) {
+            return Response.serverError().entity(new ErrorResponse(e.getMessage())).build();
+        }
     }
 
     private GetAdPaginatedResponse getGetAdPaginatedResponse(SearchByLatLongRequest searchByLatLongRequest) throws ServiceUnavailableException {

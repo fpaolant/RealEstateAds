@@ -178,6 +178,13 @@ spring:
           filters:
             - RewritePath=/api/search/openapi.json, /services/openapi.json
 
+        - id: searchByAdId_route
+          uri: ${services.search-service-uri}
+          predicates:
+            - Path=/api/search/searchById/{adId}
+          filters:
+            - RewritePath=/api/search/searchById/(?<segment>.*), /services/api/search/searchById/${segment}
+
         - id: searchByTitle_route
           uri: ${services.search-service-uri}
           predicates:

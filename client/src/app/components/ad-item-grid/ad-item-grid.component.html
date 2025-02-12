@@ -1,4 +1,5 @@
-<div class="p-6 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded flex flex-col">
+<div class="p-6 border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 rounded flex flex-col"
+[routerLink]="[detailRoute, item.id]">
     <div class="text-surface-400 dark:text-surface-400 mb-3" *ngIf="showId">(ID {{item.id}})</div>
     <div class="bg-surface-50 flex justify-center rounded p-6">
         <div class="relative mx-auto">

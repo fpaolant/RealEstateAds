@@ -1,4 +1,6 @@
-<div class="flex flex-col sm:flex-row sm:items-center p-6 gap-4" [ngClass]="{ 'border-t border-surface': itemIndex !== 0 }">
+<div class="flex flex-col sm:flex-row sm:items-center p-6 gap-4" [ngClass]="{ 'border-t border-surface': itemIndex !== 0 }"
+    [routerLink]="[detailRoute, item.id]"
+>
     <div class="md:w-40 relative">
         <img class="block xl:block mx-auto rounded w-full" src="{{'https://picsum.photos/380/200?'+item.id}}" [alt]="item.title" />
         <div class="absolute bg-black/70 rounded-border" [style]="{left: '4px', top: '4px' }" [hidden]="!showStatus">

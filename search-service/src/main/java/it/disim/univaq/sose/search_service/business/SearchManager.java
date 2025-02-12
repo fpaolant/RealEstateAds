@@ -5,6 +5,7 @@ import it.disim.univaq.sose.search_service.domain.dto.SearchByCityRequest;
 import it.disim.univaq.sose.search_service.domain.dto.SearchByLatLongRequest;
 import it.disim.univaq.sose.search_service.domain.dto.SearchByTitleRequest;
 import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.core.Response;
 
 /**
  * The SearchManager interface provides methods to search for a city or a location by latitude and longitude.
@@ -33,4 +34,12 @@ public interface SearchManager {
      * @param asyncResponse the param async response
      */
     void searchByLatLong(SearchByLatLongRequest searchByLatLongRequest, AsyncResponse asyncResponse);
+
+    /**
+     * Search ads by id.
+     *
+     * @param id the id
+     * @return the ad response
+     */
+    Response searchById(Long id);
 }
