@@ -27,7 +27,7 @@
         <!-- Dipendenze per integrazione di Apache CXF con Spring Boot -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+            <artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
             <version>${cxf.version}</version>
         </dependency>
 
