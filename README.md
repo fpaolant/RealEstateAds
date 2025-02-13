@@ -728,6 +728,12 @@ services:
     environment:
       EUREKA_SERVER_HOSTNAME: "host.docker.internal"
       EUREKA_SERVER_PORT: "7002"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7100/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
     networks:
       - rea-network
     depends_on:
@@ -829,8 +835,8 @@ services:
 
   rea-search-service:
     build:
-        context: .
-        dockerfile: search-service/Dockerfile
+      context: .
+      dockerfile: search-service/Dockerfile
     image: rea-search-service
     deploy:
       replicas: 3
@@ -839,6 +845,12 @@ services:
     environment:
       EUREKA_SERVER_HOSTNAME: "host.docker.internal"
       EUREKA_SERVER_PORT: "7002"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7140/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
     depends_on:
       rea-discovery-service:
         condition: service_healthy
@@ -883,14 +895,12 @@ services:
     networks:
       - rea-network
     depends_on:
-      - rea-discovery-service
-      - rea-gateway
-      - rea-account-service
-      - rea-ads-service
-      - rea-geolocation-service
-      - rea-search-service
-      - rea-publish-service
-      - rea-mysql
+      rea-gateway:
+        condition: service_healthy
+      rea-search-service:
+        condition: service_healthy
+      rea-publish-service:
+        condition: service_healthy
 
 volumes:
   rea-mysql-data:
@@ -910,28 +920,34 @@ For this reason, we have included the necessary configurations for replicating s
 file, as shown in the following example:
 
 ````yaml
-rea-search-service:
-  build:
-    context: .
-    dockerfile: search-service/Dockerfile
-  image: rea-search-service
-  deploy:
-    replicas: 3
-  ports:
-    - "7140-7142:7140"
-  environment:
-    EUREKA_SERVER_HOSTNAME: "host.docker.internal"
-    EUREKA_SERVER_PORT: "7002"
-  depends_on:
-    rea-discovery-service:
-      condition: service_healthy
-    rea-ads-service:
-      condition: service_healthy
-    rea-geolocation-service:
-      condition: service_healthy
-  networks:
-    - rea-network
-  tty: true
+  rea-search-service:
+    build:
+      context: .
+      dockerfile: search-service/Dockerfile
+    image: rea-search-service
+    deploy:
+      replicas: 3
+    ports:
+      - "7140-7142:7140"
+    environment:
+      EUREKA_SERVER_HOSTNAME: "host.docker.internal"
+      EUREKA_SERVER_PORT: "7002"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7140/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      rea-discovery-service:
+        condition: service_healthy
+      rea-ads-service:
+        condition: service_healthy
+      rea-geolocation-service:
+        condition: service_healthy
+    networks:
+      - rea-network
+    tty: true
 ````
 
 Specifically:
