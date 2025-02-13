@@ -268,32 +268,37 @@ To create a SOAP application, you need to manually configure Apache CXF. Here is
 ```java
 
 @Configuration
-public class ApacheCXFConfig {
-
+public class CXFConfig {
     private final Bus bus;
-    private final AccountService accountService;
+
+    private final AdsService adsService;
+
     private final MetricsProvider metricsProvider;
 
-    public ApacheCXFConfig(Bus bus, AccountService accountService, MetricsProvider metricsProvider) {
+    public CXFConfig(Bus bus, AdsService adsService, MetricsProvider metricsProvider) {
         this.bus = bus;
-        this.accountService = accountService;
+        this.adsService = adsService;
         this.metricsProvider = metricsProvider;
     }
 
     @Bean
-    public Endpoint endpoint() {
-        EndpointImpl endpoint = new EndpointImpl(bus, accountService, null, null, new MetricsFeature[]{
-                new MetricsFeature(metricsProvider)
-        });
-        endpoint.publish("/AccountService");
-        return endpoint;
+    public LoggingFeature loggingFeature() {
+        LoggingFeature loggingFeature = new LoggingFeature();
+        loggingFeature.setPrettyLogging(true);
+        return loggingFeature;
     }
 
+    @Bean
+    public Endpoint endpoint() {
+        EndpointImpl endpoint = new EndpointImpl(this.bus, this.adsService, null, null, (WebServiceFeature[])new MetricsFeature[] { new MetricsFeature(this.metricsProvider) });
+        endpoint.publish("/AdsService");
+        return (Endpoint)endpoint;
+    }
 }
 ```
 
 As seen abovee, you need to manually create a Java Bean that provides the proper initialization of an **Apache CXF
-Endpoint**. Through dependency injection, Spring will inject: the `Bus` from Apache CXF, `AccountService` which is
+Endpoint**. Through dependency injection, Spring will inject: the `Bus` from Apache CXF, `AdsService` which is
 the interface defining the SOAP services, and `MetricsProvider` which is the metrics provider (we will discuss this
 further later).
 
