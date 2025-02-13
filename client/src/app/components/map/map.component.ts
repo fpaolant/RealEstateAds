@@ -5,6 +5,7 @@ import * as L from 'leaflet';
 
 // Correggi il percorso delle icone predefinite
 (L.Icon.Default as any).prototype.options.iconUrl = '../leaflet/marker-icon.png';
+(L.Icon.Default as any).prototype.options.iconRetinaUrl = '../leaflet/marker-icon-2x.png'; 
 (L.Icon.Default as any).prototype.options.shadowUrl = '../leaflet/marker-shadow.png';
 
 @Component({
