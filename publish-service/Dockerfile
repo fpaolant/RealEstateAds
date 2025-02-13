@@ -20,8 +20,6 @@ COPY publish-service/src /app/src
 # Run code generation and Maven build command, skipping tests
 RUN mvn clean generate-sources package -DskipTests
 
-#CMD ["tail", "-f", "/dev/null"]
-
 # Step 2: Run
 FROM amazoncorretto:17.0.12-alpine3.19
 
