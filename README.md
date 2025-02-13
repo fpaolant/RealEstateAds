@@ -829,8 +829,10 @@ services:
         context: .
         dockerfile: search-service/Dockerfile
     image: rea-search-service
+    deploy:
+      replicas: 3
     ports:
-      - "7140:7140"
+      - "7140-7142:7140"
     environment:
       EUREKA_SERVER_HOSTNAME: "host.docker.internal"
       EUREKA_SERVER_PORT: "7002"
@@ -894,6 +896,67 @@ networks:
   rea-network:
     driver: bridge
 ```
+
+## Scalability and Service Replication for Load Management
+Due to the nature of the system, it is essential to ensure that it can handle a high number of requests and workloads
+without overloading the services.
+During the high-load period the service could be affected by a huge number of requests, so it is necessary to replicate,
+is Search-Service
+
+For this reason, we have included the necessary configurations for replicating service in the `docker-compose`
+file, as shown in the following example:
+
+````yaml
+rea-search-service:
+  build:
+    context: .
+    dockerfile: search-service/Dockerfile
+  image: rea-search-service
+  deploy:
+    replicas: 3
+  ports:
+    - "7140-7142:7140"
+  environment:
+    EUREKA_SERVER_HOSTNAME: "host.docker.internal"
+    EUREKA_SERVER_PORT: "7002"
+  depends_on:
+    rea-discovery-service:
+      condition: service_healthy
+    rea-ads-service:
+      condition: service_healthy
+    rea-geolocation-service:
+      condition: service_healthy
+  networks:
+    - rea-network
+  tty: true
+````
+
+Specifically:
+
+````yaml
+deploy:
+  replicas: 3
+````
+
+specifies how many replicas should be deployed, and
+
+````yaml
+ports:
+  - "7140-7142:7140"
+````
+
+specifies the range of ports to assign.
+
+This allows defining the number of replicas for each service based on needs and load demands.
+
+Thanks to this configuration, the system can withstand even higher workloads if necessary.
+
+The client services used by prosumers obtain the available provider instances through Eureka.
+By following the **"random without repetition"** load balancing policy we developed, it ensures an even distribution of
+requests among the different replicas, avoiding overloads on single instances and thereby improving the overall system
+performance.
+
+
 ## Configuration Guide
 
 A detailed guide outlining all the steps necessary to configure and start the application.
