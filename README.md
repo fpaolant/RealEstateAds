@@ -293,7 +293,7 @@ public class ApacheCXFConfig {
 ```
 
 As seen abovee, you need to manually create a Java Bean that provides the proper initialization of an **Apache CXF
-Endpoint**. Through dependency injection, Spring will inject: the `Bus` from Apache CXF, `BankAccountService` which is
+Endpoint**. Through dependency injection, Spring will inject: the `Bus` from Apache CXF, `AccountService` which is
 the interface defining the SOAP services, and `MetricsProvider` which is the metrics provider (we will discuss this
 further later).
 
