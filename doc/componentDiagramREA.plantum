@@ -7,29 +7,17 @@ database AdsDB
 database WalletDB
 
 component "RealEstate SOA System" {
-
  [Ads Service] as ADS <<SOAP Service Provider>>
-
 
  [Geolocation Service] as GS <<SOAP Service Provider>>
 
-
-
  [Account Service] as AS <<REST Service Provider>>
-
-
-
-
 
  [Wallet Service] as WS <<REST Service Provider>>
 
-
-
  [Search Service] as SS <<REST Service Prosumer>>
 
-
  [Publish Service] as PS <<REST Service Prosumer>>
-
 
  [Gateway Service] as GW <<REST Service Prosumer>>
 }
@@ -78,8 +66,10 @@ PS --0)-- GW : PublishAd
 PS --0)-- GW : OpenPublishAccount
 PS --0)-- GW : ApproveAd
 PS --0)-- GW : RejectAd
+PS --0)-- GW : GetAdStatus
 PS --0)-- GW : GetAds
 PS --0)-- GW : GetAdsByAccountId
 
 
 @enduml
+s
