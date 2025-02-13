@@ -196,6 +196,12 @@ public interface WalletService {
                                     @Content(mediaType = "application/json", schema = @Schema(implementation = WalletResponse.class)),
                                     @Content(mediaType = "application/xml", schema = @Schema(implementation = WalletResponse.class))
                             }),
+                    @ApiResponse(responseCode = "400", description = "Not Enough balance",
+                            content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)),
+                                    @Content(mediaType = "application/xml", schema = @Schema(implementation = ErrorResponse.class))
+                            }
+                    ),
                     @ApiResponse(responseCode = "404", description = "Wallet not found",
                             content = {
                                     @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)),
