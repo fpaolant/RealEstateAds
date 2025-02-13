@@ -162,8 +162,10 @@ services:
         context: .
         dockerfile: search-service/Dockerfile
     image: rea-search-service
+    deploy:
+      replicas: 3
     ports:
-      - "7140:7140"
+      - "7140-7142:7140"
     environment:
       EUREKA_SERVER_HOSTNAME: "host.docker.internal"
       EUREKA_SERVER_PORT: "7002"
@@ -183,8 +185,10 @@ services:
       context: .
       dockerfile: publish-service/Dockerfile
     image: rea-publish-service
+    deploy:
+      replicas: 3
     ports:
-      - "7150:7150"
+      - "7150-7152:7150"
     environment:
       EUREKA_SERVER_HOSTNAME: "host.docker.internal"
       EUREKA_SERVER_PORT: "7002"
