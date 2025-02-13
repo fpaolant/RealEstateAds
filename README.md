@@ -932,7 +932,7 @@ When all services are up and running, open the browser and go to the following a
 http://localhost
 ```
 
-Ennjoy the RealEstateAds system!
+Enjoy the RealEstateAds system!
 
 ## Demo video
 
