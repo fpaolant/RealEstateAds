@@ -894,6 +894,45 @@ networks:
   rea-network:
     driver: bridge
 ```
+## Configuration Guide
+
+A detailed guide outlining all the steps necessary to configure and start the application.
+
+### Prerequisites
+
+- Ensure Docker is installed.
+
+### Cloning the Repository
+
+Clone the public git repository:
+
+```sh
+git clone https://github.com/fpaolant/RealEstateAds.git
+```
+
+_Or via SSH:_
+
+```sh
+git clone git@github.com:fpaolant/RealEstateAds.git
+```
+
+### Starting Services with Docker
+
+After executing the previous command, still in the project's main directory, run the Docker Compose command to build and
+start all services:
+
+```sh
+docker-compose up --build
+```
+
+### Open the browser
+When all services are up and running, open the browser and go to the following address:
+
+```sh
+http://localhost
+```
+
+Ennjoy the RealEstateAds system!
 
 ## Demo video
 
