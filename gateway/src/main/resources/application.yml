@@ -244,6 +244,7 @@ spring:
             - name: AuthorizationFilter
               args:
                 roles:
+                  - "USER"
                   - "ADMIN"
                 checkPathWithIdentifier: false
 
