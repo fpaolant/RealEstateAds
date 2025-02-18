@@ -1004,7 +1004,7 @@ After executing the previous command, still in the project's main directory, run
 start all services:
 
 ```sh
-docker-compose up --build
+docker compose up --build
 ```
 
 ### Open the browser
